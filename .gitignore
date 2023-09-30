@@ -36,3 +36,7 @@ slurm*out
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+*.pth
+*.json
+*.yaml

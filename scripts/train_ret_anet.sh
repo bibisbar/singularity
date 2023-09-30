@@ -3,12 +3,13 @@
 #SBATCH --job-name=sl_ret
 
 # debug info
-
-dataset=$1  # coco, flickr, msrvtt, ..., see complete list below
-pretrained_path=$2  # path to pth file
-save_dirname=$3  # under the root dir of pretrained_path
-mode=$4  # [local, slurm]
-ngpus=$5  # int
+# can add MASTER_PORT to control port for distributed training
+exp_name=$1  # note we added ${corpus} prefix automatically
+dataset=$2  # coco, flickr, msrvtt, ..., see complete list below
+exp_dir=${SL_EXP_DIR}
+ngpus=$3   # number of GPUs to use
+mode=$4
+port_dis = $5
 
 if [[ ${dataset} != "coco" ]] && [[ ${dataset} != "flickr" ]] && \
   [[ ${dataset} != "msrvtt" ]] && [[ ${dataset} != "didemo" ]] && \
@@ -23,30 +24,27 @@ if [[ ${mode} != "slurm" ]] && [[ ${mode} != "local" ]]; then
   exit 1
 fi
 
-if [ ! -f ${pretrained_path} ]; then
-  echo "pretrained_path ${pretrained_path} does not exist. Exit."
-  exit 1
-fi
-
-output_dir=$(dirname $pretrained_path)/${save_dirname}
+output_dir=/home/wiss/zhang/Jinhe/singularity/ret_anet/ret_${dataset}/${dataset}_${exp_name}
 config_path=./configs/ret_${dataset}.yaml
+echo "output dir >> ${output_dir}"
 
-### save code copy 
+### save code copy
 project_dir=$PWD
 if [ -d ${output_dir} ]; then
   echo "Dir ${output_dir} already exist. Exit."
   exit 1
 fi
 # mkdir -p ${output_dir}
-# cd .. 
+# cd ..
 # code_dir=${output_dir}/code
 # project_dirname=singularity
-# rsync -ar ${project_dirname} ${code_dir}  --exclude='*.out'  # --exclude='.git'
+# rsync -ar ${project_dirname} ${code_dir} --exclude='*.out'  # --exclude='.git'
 # cd ${code_dir}/${project_dirname}
 # echo "Copied source files to '${PWD}' and launch from this dir"
-
+export NCCL_P2P_DISABLE=1
 ############### ======> Your training scripts [START]
 if [[ ${mode} == "slurm" ]]; then
+  nvidia-smi
   # slurm job, started with
   # sbatch THIS_SCRIPT ... slurm ...
   master_node=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
@@ -64,16 +62,14 @@ if [[ ${mode} == "slurm" ]]; then
   export PYTHONPATH=${PYTHONPATH}:.
   echo "PYTHONPATH: ${PYTHONPATH}"
 
- 
   python \
   tasks/retrieval.py \
   ${config_path} \
   output_dir=${output_dir} \
-  pretrained_path=${pretrained_path} \
-  evaluate=True \
+  wandb.project=sb_ret_${dataset} \
+  wandb.enable=False \
   dist_url=${dist_url} \
-  ${@:6}
-
+  ${@:5}
 elif [[ ${mode} == "local" ]]; then
   # bash THIS_SCRIPT ... local ...
   rdzv_endpoint="${HOSTNAME}:${MASTER_PORT:-40000}"
@@ -87,15 +83,16 @@ elif [[ ${mode} == "local" ]]; then
   tasks/retrieval.py \
   ${config_path} \
   output_dir=${output_dir} \
-  pretrained_path=${pretrained_path} \
-  evaluate=True \
-  ${@:6}
+  wandb.project=sb_ret_${dataset} \
+  wandb.enable=True \
+  ${@:5}
 else
   echo "mode expects one of [local, slurm], got ${mode}."
 fi
-############### ======> Your training scripts [END] 
+############### ======> Your training scripts [END]
+
 
 ### cd back
 echo "Finish at dir: ${PWD}, cd back to project dir ${project_dir}"
+echo "output dir >> ${output_dir}"
 cd ${project_dir}
-
