@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:2
-#SBATCH --job-name=sl_ret
-#SBATCH --nodelist=worker-6
+#SBATCH --job-name=mg_ret
+#SBATCH --nodelist=worker-5
 # debug info
 # can add MASTER_PORT to control port for distributed training
 exp_name=$1  # note we added ${corpus} prefix automatically
@@ -14,7 +14,7 @@ MASTER_PORT=$5
 if [[ ${dataset} != "coco" ]] && [[ ${dataset} != "flickr" ]] && \
   [[ ${dataset} != "msrvtt" ]] && [[ ${dataset} != "didemo" ]] && \
   [[ ${dataset} != "anet" ]] && [[ ${dataset} != "ssv2_label" ]] && \
-  [[ ${dataset} != "ssv2_template" ]]; then
+  [[ ${dataset} != "ssv2_template" ]] && [[ ${dataset} != "moviegraph" ]]; then
   echo "Does not support dataset ${dataset}"
   exit 1
 fi

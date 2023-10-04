@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:2
 #SBATCH --job-name=sl_ret
-#SBATCH --nodelist=worker-6
+
 # debug info
 # can add MASTER_PORT to control port for distributed training
 exp_name=$1  # note we added ${corpus} prefix automatically
@@ -92,3 +92,7 @@ fi
 ############### ======> Your training scripts [END]
 
 
+### cd back
+echo "Finish at dir: ${PWD}, cd back to project dir ${project_dir}"
+echo "output dir >> ${output_dir}"
+cd ${project_dir}

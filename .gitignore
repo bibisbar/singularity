@@ -6,6 +6,7 @@ tmp*.py
 tmp*
 *pickle
 data/
+/home/wiss/zhang/Jinhe/singularity/wandb
 
 # Zip Files/Packages #
 *.7z
@@ -40,3 +41,5 @@ Thumbs.db
 *.pth
 *.json
 *.yaml
+*.wandb
+*.txt
