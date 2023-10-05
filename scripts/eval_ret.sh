@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --gres=gpu:2
-#SBATCH --job-name=sl_ret
-
+#SBATCH --gres=gpu:1
+#SBATCH --job-name=sl_ret_eval
+#SBATCH --exclude=worker-2
 # debug info
 
 dataset=$1  # coco, flickr, msrvtt, ..., see complete list below
@@ -9,11 +9,12 @@ pretrained_path=$2  # path to pth file
 save_dirname=$3  # under the root dir of pretrained_path
 mode=$4  # [local, slurm]
 ngpus=$5  # int
+MASTER_PORT=$6
 
 if [[ ${dataset} != "coco" ]] && [[ ${dataset} != "flickr" ]] && \
   [[ ${dataset} != "msrvtt" ]] && [[ ${dataset} != "didemo" ]] && \
   [[ ${dataset} != "anet" ]] && [[ ${dataset} != "ssv2_label" ]] && \
-  [[ ${dataset} != "ssv2_template" ]]; then
+  [[ ${dataset} != "ssv2_template" ]] && [[ ${dataset} != "moviegraph" ]]; then
   echo "Does not support dataset ${dataset}"
   exit 1
 fi
@@ -95,7 +96,5 @@ else
 fi
 ############### ======> Your training scripts [END] 
 
-### cd back
-echo "Finish at dir: ${PWD}, cd back to project dir ${project_dir}"
-cd ${project_dir}
+
 

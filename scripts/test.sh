@@ -1,0 +1,4 @@
+[temporal_contact_swap_mani, temporal_action_swap_mani, neighborhood_same_entity_mani, neighborhood_diff_entity_mani, counter_spatial_mani, counter_contact_mani, counter_action_mani, counter_attribute_mani]
+
+
+

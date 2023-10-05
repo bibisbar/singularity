@@ -4,9 +4,25 @@ data_root: /home/wiss/zhang/nfs/Anet_sing
 anno_root_downstream: /home/wiss/zhang/Jinhe/singularity/Data/anetqa
 train_type: anet_ret_train_1.json
 train_file: ['${anno_root_downstream}/${train_type}', '/home/wiss/zhang/nfs/Anet_sing', video]
-test_types: [val1, ]
+test_types: [temporal_contact_swap, temporal_contact_swap_mani, temporal_action_swap, temporal_action_swap_mani, neighborhood_same_entity, neighborhood_same_entity_mani, neighborhood_diff_entity, neighborhood_diff_entity_mani, counter_spatial, counter_spatial_mani, counter_contact, counter_contact_mani, counter_action, counter_action_mani, counter_attribute, counter_attribute_mani]
 test_file:
-  val1: ['${anno_root_downstream}/anet_ret_temporal_contact_swap.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  temporal_contact_swap: ['${anno_root_downstream}/anet_ret_temporal_contact_swap.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  temporal_contact_swap_mani: ['${anno_root_downstream}/anet_ret_temporal_contact_swap_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  temporal_action_swap: ['${anno_root_downstream}/anet_ret_temporal_action_swap.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  temporal_action_swap_mani: ['${anno_root_downstream}/anet_ret_temporal_action_swap_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  neighborhood_same_entity: ['${anno_root_downstream}/anet_ret_neighborhood_same_entity.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  neighborhood_same_entity_mani: ['${anno_root_downstream}/anet_ret_neighborhood_same_entity_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  neighborhood_diff_entity: ['${anno_root_downstream}/anet_ret_neighborhood_diff_entity.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  neighborhood_diff_entity_mani: ['${anno_root_downstream}/anet_ret_neighborhood_diff_entity_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_spatial: ['${anno_root_downstream}/anet_ret_counter_spatial.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_spatial_mani: ['${anno_root_downstream}/anet_ret_counter_spatial_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_contact: ['${anno_root_downstream}/anet_ret_counter_contact.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_contact_mani: ['${anno_root_downstream}/anet_ret_counter_contact_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_action: ['${anno_root_downstream}/anet_ret_counter_action.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_action_mani: ['${anno_root_downstream}/anet_ret_counter_action_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_attribute: ['${anno_root_downstream}/anet_ret_counter_attribute.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  counter_attribute_mani: ['${anno_root_downstream}/anet_ret_counter_attribute_mani.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  
 stop_key: val1/  # used to choose the best ckpt. If None, save the last.
 is_paragraph_retrieval: True
 
@@ -85,3 +101,6 @@ wandb:
   enable: False
   entity: gengyuanzhang   # username or teamname to store the runs, see https://docs.wandb.ai/ref/python/init
   project: anet_ret  # setup in your command line
+
+
+save_path: /home/wiss/zhang/nfs/video_prober/singularity/anetqa/

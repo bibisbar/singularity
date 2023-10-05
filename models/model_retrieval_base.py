@@ -285,7 +285,65 @@ class SingularityRetrievalBase(nn.Module):
         image_feat = F.normalize(image_proj(pooled_image_embeds), dim=-1)
         text_feat = F.normalize(text_proj(pooled_text_embeds), dim=-1)
 
+        #save image and text features only when evaluating
+        if self.config.evaluate:
+            manipulation = ''
+            
+            # if image_feat.size(0) == 184:
+            #     manipulation = 'temporal_contact_swap_ori'
+            # elif image_feat.size(0) == 62:
+            #     manipulation = 'temporal_action_swap_ori'
+            # elif image_feat.size(0) == 102:
+            #     manipulation = 'neighborhood_same_entity_ori'
+            # elif image_feat.size(0) == 35:
+            #     manipulation = 'neighborhood_different_entity_ori'
+            # elif image_feat.size(0) == 935:
+            #     manipulation = 'counter_spatial_ori'
+            # elif image_feat.size(0) == 1008:
+            #     manipulation = 'counter_contact_ori'
+            # elif image_feat.size(0) == 1168:
+            #     manipulation = 'counter_action_ori'
+            # elif image_feat.size(0) == 818:
+            #     manipulation = 'counter_attribute_ori'
+            # else:
+            #     #throw an exception
+            #     raise Exception('Unknown manipulation type')
+            
+            if image_feat.size(0) == 563:
+                manipulation = 'temporal_int_ori'
+            elif image_feat.size(0) == 489:
+                manipulation = 'temporal_act_ori'
+            elif image_feat.size(0) == 160:
+                manipulation = 'neighborhood_same_entity_ori'
+            elif image_feat.size(0) == 597:
+                manipulation = 'neighborhood_diff_entity_ori'
+            elif image_feat.size(0) == 583:
+                manipulation = 'counter_rel_ori'
+            elif image_feat.size(0) == 591:
+                manipulation = 'counter_int_ori'
+            elif image_feat.size(0) == 591:
+                manipulation = 'counter_attr_ori'
+            elif image_feat.size(0) == 535:
+                manipulation = 'counter_act_ori'
+            else:
+                #throw an exception
+                raise Exception('Unknown manipulation type')
+            
+                
+            print("saving image and text features of type: ", manipulation)
+            print(text_feat.size())
+            print(image_feat.size())
+            text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
+            image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
+            torch.save(text_feat, text_feat_save_path)
+            torch.save(image_feat, image_feat_save_path)
+            # check if the features are saved
+            import os
+            print(os.path.exists(text_feat_save_path))
+            print(os.path.exists(image_feat_save_path))
+            print("saved image and text features of type: ", manipulation)
         sim_i2t = torch.einsum("mld,nd->mln", image_feat, text_feat).mean(1) / t  # (N, N)
+        
         sim_t2i = sim_i2t.T
         return sim_i2t, sim_t2i
 
