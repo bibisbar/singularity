@@ -1,0 +1,4 @@
+output dir >> /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa
+rdzv_endpoint: worker-6:12364
+[32m2023-10-18T02:27:17 | loopitr: [0mLogging to: /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa/train.log
+Problem at: /home/wiss/zhang/Jinhe/singularity/utils/logger.py 35 setup_wandb

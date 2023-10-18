@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --gres=gpu:2
-#SBATCH --job-name=sl_qa
-#SBATCH --output=sl_qa.out
-#SBATCH --error=sl_qa.err
+#SBATCH --job-name=sl_qa_full_Answer
+#SBATCH --output=sl_qa_full_Answer.out
+#SBATCH --error=sl_qa_full_Answer.err
 # debug info
 
 # can add MASTER_PORT to control port for distributed training
@@ -26,7 +26,7 @@ if [[ ${mode} != "slurm" ]] && [[ ${mode} != "local" ]]; then
 fi
 
 output_dir=/home/wiss/zhang/Jinhe/singularity/qa_anet/${exp_name}
-config_path=./configs/qa_${dataset}.yaml
+config_path=./configs/qa_anet_full.yaml
 echo "output dir >> ${output_dir}"
 
 ### save code copy

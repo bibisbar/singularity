@@ -1,0 +1,230 @@
+output dir >> /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full
+rdzv_endpoint: worker-6:12365
+[32m2023-10-18T13:08:32 | loopitr: [0mLogging to: /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/train.log
+
+[32m2023-10-18T13:08:43 | __main__: [0mconfig: 
+{'dataset_name': 'anet', 'data_root': '/home/wiss/zhang/nfs/Anet_sing', 'anno_root_downstream': '/home/wiss/zhang/Jinhe/singularity/anno_downstream_ori', 'train_file': [['/nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video']], 'test_types': ['val'], 'test_file': {'val': ['/nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video'], 'test': ['/nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video']}, 'stop_key': 'val', 'answer_list': '/nfs/data2/zhang/AnetQA/qa_train/answer_list.json', 'text_encoder': 'bert-base-uncased', 'text_decoder': 'bert-base-uncased', 'bert_config': 'configs/config_bert.json', 'vit_type': 'beit', 'vit_zoo': {'beit': 'microsoft/beit-base-patch16-224-pt22k-ft22k'}, 'vit_name_or_pretrained_path': '${vit_zoo[${vit_type}]}', 'temporal_vision_encoder': {'enable': True, 'num_layers': 2, 'update_pooler_embed': False}, 'add_temporal_embed': True, 'image_res': 224, 'embed_dim': 256, 'video_input': {'num_frames': 4, 'reader': 'decord', 'sample_type': 'rand', 'num_frames_test': 4, 'sample_type_test': 'middle'}, 'batch_size': {'image': 128, 'video': 64}, 'batch_size_test': {'image': 64, 'video': 64}, 'k_test': 128, 'temp': 0.07, 'eos': '[SEP]', 'max_q_len': 25, 'max_a_len': 5, 'optimizer': {'opt': 'adamW', 'lr': 1e-05, 'opt_betas': [0.9, 0.999], 'weight_decay': 0.02, 'max_grad_norm': -1, 'different_lr': {'enable': False, 'module_names': [], 'lr': 0.001}}, 'scheduler': {'sched': 'cosine', 'epochs': 10, 'min_lr_multi': 0.1, 'warmup_epochs': 0.5}, 'output_dir': '/home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full', 'pretrained_path': '/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth', 'resume': False, 'evaluate': False, 'eval_frame_ensemble': 'concat', 'device': 'cuda', 'seed': 42, 'log_freq': 100, 'dist_url': 'env://', 'distributed': True, 'fp16': True, 'debug': False, 'num_workers': 24, 'wandb': {'enable': True, 'entity': 'gengyuanzhang', 'project': 'sb_qa_anet'}, '12365': None, 'rank': 0, 'world_size': 2, 'gpu': 0, 'dist_backend': 'nccl', 'result_dir': '/home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full'}
+[32m2023-10-18T13:08:43 | __main__: [0mtrain_file: [['/nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video']]
+[32m2023-10-18T13:08:43 | __main__: [0mCreating vqa QA datasets
+[5m[31mWARNING[0m [32m2023-10-18T13:08:44 | py.warnings: [0m/home/wiss/zhang/Jinhe/singularity/utils/distributed.py:18: UserWarning: This DataLoader will create 24 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  builtin_warn(*args, **kwargs)
+
+[5m[31mWARNING[0m [32m2023-10-18T13:08:44 | py.warnings: [0m/home/wiss/zhang/Jinhe/singularity/utils/distributed.py:18: UserWarning: This DataLoader will create 24 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  builtin_warn(*args, **kwargs)
+
+[32m2023-10-18T13:08:44 | tasks.shared_utils: [0mCreating model
+[32m2023-10-18T13:08:48 | models.model_retrieval_base: [0mLoading vit pre-trained weights from huggingface microsoft/beit-base-patch16-224-pt22k-ft22k.
+[5m[31mWARNING[0m [32m2023-10-18T13:08:49 | py.warnings: [0m/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+
+[5m[31mWARNING[0m [32m2023-10-18T13:08:49 | py.warnings: [0m/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+
+[32m2023-10-18T13:08:51 | models.model_retrieval_base: [0mInit new model with new image size 224, and load weights.
+[32m2023-10-18T13:08:54 | models.model_retrieval_base: [0m_IncompatibleKeys(missing_keys=['encoder.layer.0.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.1.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.2.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.3.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.4.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.5.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.6.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.7.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.8.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.9.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.10.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.11.attention.attention.relative_position_bias.relative_position_index'], unexpected_keys=[])
+[32m2023-10-18T13:08:54 | models.model_retrieval_base: [0mBuild text_encoder bert-base-uncased
+[32m2023-10-18T13:08:58 | models.model_retrieval_base: [0mBuild text_encoder bert-base-uncased, done!
+[32m2023-10-18T13:08:58 | models.model_retrieval_base: [0mBuild temporal_vision_encoder (#layer=2), randomly initialised.
+[32m2023-10-18T13:08:58 | models.model_retrieval_base: [0mBuild temporal_vision_encoder, done!
+[32m2023-10-18T13:08:58 | models.model_vqa: [0mBuild text_decoder bert-base-uncased
+[32m2023-10-18T13:09:00 | models.model_vqa: [0mBuild text_decoder bert-base-uncased, done!
+[32m2023-10-18T13:09:01 | utils.optimizer: [0moptimizer -- lr=1e-05 wd=0.02 len(p)=220
+[32m2023-10-18T13:09:01 | utils.optimizer: [0moptimizer -- lr=1e-05 wd=0 len(p)=349
+[32m2023-10-18T13:09:01 | tasks.shared_utils: [0mLoading checkpoint from /home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth
+[32m2023-10-18T13:09:06 | models.utils: [0mLoad temporal_embeddings, lengths: 64-->4
+[32m2023-10-18T13:09:06 | models.utils: [0mLoad temporal_embeddings, lengths: 4-->4
+[32m2023-10-18T13:09:06 | tasks.shared_utils: [0m_IncompatibleKeys(missing_keys=['vision_encoder.encoder.layer.0.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.1.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.2.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.3.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.4.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.5.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.6.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.7.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.8.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.9.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.10.attention.attention.relative_position_bias.relative_position_index', 'vision_encoder.encoder.layer.11.attention.attention.relative_position_bias.relative_position_index'], unexpected_keys=['temp', 'vision_proj.weight', 'vision_proj.bias', 'text_proj.weight', 'text_proj.bias', 'itm_head.weight', 'itm_head.bias'])
+[32m2023-10-18T13:09:06 | tasks.shared_utils: [0mLoaded checkpoint from /home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth
+[32m2023-10-18T13:09:06 | __main__: [0mtraining
+[5m[31mWARNING[0m [32m2023-10-18T13:18:22 | py.warnings: [0m/home/wiss/zhang/Jinhe/singularity/utils/distributed.py:18: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  builtin_warn(*args, **kwargs)
+
+[5m[31mWARNING[0m [32m2023-10-18T13:18:22 | py.warnings: [0m/home/wiss/zhang/Jinhe/singularity/utils/distributed.py:18: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  builtin_warn(*args, **kwargs)
+
+[32m2023-10-18T13:18:22 | utils.basic_utils: [0mTrain Epoch: [0]  [  0/250]  eta: 1 day, 14:36:14  lr: 0.000001  loss: 35.5450  time: 555.8964  data: 397.6469  max mem: 41686 res mem: 44538
+[32m2023-10-18T13:38:40 | utils.basic_utils: [0mTrain Epoch: [0]  [100/250]  eta: 0:43:54  lr: 0.000008  loss: 11.3193  time: 13.0962  data: 0.0436  max mem: 44795 res mem: 45008
+[32m2023-10-18T14:02:36 | utils.basic_utils: [0mTrain Epoch: [0]  [200/250]  eta: 0:13:18  lr: 0.000010  loss: 6.9677  time: 15.2607  data: 0.0231  max mem: 44795 res mem: 45008
+[32m2023-10-18T14:07:23 | utils.basic_utils: [0mTrain Epoch: [0]  [249/250]  eta: 0:00:13  lr: 0.000010  loss: 6.3718  time: 2.0925  data: 0.0001  max mem: 44795 res mem: 45008
+[32m2023-10-18T14:07:23 | utils.basic_utils: [0mTrain Epoch: [0] Total time: 0:58:16 (13.9870 s / it)
+[32m2023-10-18T14:07:23 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 13.5905
+[32m2023-10-18T14:07:23 | __main__: [0mEvaluating val split...
+[32m2023-10-18T14:07:27 | __main__: [0mStart generating results.
+[32m2023-10-18T14:13:02 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:26:31    time: 334.9100  data: 319.3154  max mem: 44795 res mem: 46208
+[32m2023-10-18T14:16:45 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:15    time: 6.3476  data: 5.0732  max mem: 44795 res mem: 46208
+[32m2023-10-18T14:16:45 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:09:17 (15.0788 s / it)
+[32m2023-10-18T14:16:45 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T14:16:45 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T14:16:45 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T14:16:45 | __main__: [0meval_res {'val': {'overall': 23.37}}
+[32m2023-10-18T14:23:09 | utils.basic_utils: [0mTrain Epoch: [1]  [  0/250]  eta: 1 day, 1:44:24  lr: 0.000010  loss: 6.2411  time: 370.6578  data: 328.9145  max mem: 44796 res mem: 46518
+[32m2023-10-18T14:46:12 | utils.basic_utils: [0mTrain Epoch: [1]  [100/250]  eta: 0:43:24  lr: 0.000010  loss: 5.3984  time: 14.1874  data: 0.8856  max mem: 44796 res mem: 46518
+[32m2023-10-18T15:09:51 | utils.basic_utils: [0mTrain Epoch: [1]  [200/250]  eta: 0:13:09  lr: 0.000010  loss: 4.7315  time: 14.4869  data: 2.5139  max mem: 44796 res mem: 46518
+[32m2023-10-18T15:14:14 | utils.basic_utils: [0mTrain Epoch: [1]  [249/250]  eta: 0:00:13  lr: 0.000009  loss: 4.0214  time: 1.5010  data: 0.0007  max mem: 44796 res mem: 46518
+[32m2023-10-18T15:14:14 | utils.basic_utils: [0mTrain Epoch: [1] Total time: 0:57:16 (13.7441 s / it)
+[32m2023-10-18T15:14:14 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 4.9702
+[32m2023-10-18T15:14:14 | __main__: [0mEvaluating val split...
+[32m2023-10-18T15:14:19 | __main__: [0mStart generating results.
+[32m2023-10-18T15:20:01 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:31:04    time: 342.2719  data: 330.4377  max mem: 44796 res mem: 46518
+[32m2023-10-18T15:23:25 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.1224  data: 4.8851  max mem: 44796 res mem: 46518
+[32m2023-10-18T15:23:25 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:09:06 (14.7622 s / it)
+[32m2023-10-18T15:23:25 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T15:23:25 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T15:23:25 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T15:23:25 | __main__: [0meval_res {'val': {'overall': 26.39}}
+[32m2023-10-18T15:29:42 | utils.basic_utils: [0mTrain Epoch: [2]  [  0/250]  eta: 1 day, 1:10:15  lr: 0.000009  loss: 3.7461  time: 362.4611  data: 337.9394  max mem: 44796 res mem: 46518
+[32m2023-10-18T15:52:23 | utils.basic_utils: [0mTrain Epoch: [2]  [100/250]  eta: 0:42:40  lr: 0.000009  loss: 3.2115  time: 13.3732  data: 1.6105  max mem: 44796 res mem: 46518
+[32m2023-10-18T16:14:54 | utils.basic_utils: [0mTrain Epoch: [2]  [200/250]  eta: 0:12:44  lr: 0.000009  loss: 3.5610  time: 13.8412  data: 2.0220  max mem: 44796 res mem: 46518
+[32m2023-10-18T16:20:41 | utils.basic_utils: [0mTrain Epoch: [2]  [249/250]  eta: 0:00:13  lr: 0.000008  loss: 3.4307  time: 2.9414  data: 0.0001  max mem: 44796 res mem: 46518
+[32m2023-10-18T16:20:41 | utils.basic_utils: [0mTrain Epoch: [2] Total time: 0:57:02 (13.6882 s / it)
+[32m2023-10-18T16:20:41 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 3.9364
+[32m2023-10-18T16:20:41 | __main__: [0mEvaluating val split...
+[32m2023-10-18T16:20:52 | __main__: [0mStart generating results.
+[32m2023-10-18T16:26:08 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:14:50    time: 315.9558  data: 311.0202  max mem: 44796 res mem: 46518
+[32m2023-10-18T16:29:47 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.0380  data: 4.8258  max mem: 44796 res mem: 46518
+[32m2023-10-18T16:29:47 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:55 (14.4668 s / it)
+[32m2023-10-18T16:29:47 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T16:29:47 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T16:29:47 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T16:29:47 | __main__: [0meval_res {'val': {'overall': 29.97}}
+[32m2023-10-18T16:35:40 | utils.basic_utils: [0mTrain Epoch: [3]  [  0/250]  eta: 23:35:54  lr: 0.000008  loss: 3.5872  time: 339.8193  data: 309.2819  max mem: 44796 res mem: 46518
+[32m2023-10-18T16:59:17 | utils.basic_utils: [0mTrain Epoch: [3]  [100/250]  eta: 0:43:28  lr: 0.000008  loss: 4.1164  time: 15.9349  data: 4.0661  max mem: 44796 res mem: 46518
+[32m2023-10-18T17:21:41 | utils.basic_utils: [0mTrain Epoch: [3]  [200/250]  eta: 0:12:50  lr: 0.000007  loss: 3.8488  time: 13.9512  data: 0.0883  max mem: 44796 res mem: 46518
+[32m2023-10-18T17:27:01 | utils.basic_utils: [0mTrain Epoch: [3]  [249/250]  eta: 0:00:13  lr: 0.000007  loss: 2.9385  time: 2.2105  data: 0.0001  max mem: 44796 res mem: 46518
+[32m2023-10-18T17:27:01 | utils.basic_utils: [0mTrain Epoch: [3] Total time: 0:57:00 (13.6822 s / it)
+[32m2023-10-18T17:27:01 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 3.3885
+[32m2023-10-18T17:27:01 | __main__: [0mEvaluating val split...
+[32m2023-10-18T17:27:05 | __main__: [0mStart generating results.
+[32m2023-10-18T17:32:10 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:08:09    time: 305.1121  data: 298.6082  max mem: 44796 res mem: 46518
+[32m2023-10-18T17:36:03 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.4612  data: 5.1758  max mem: 44796 res mem: 46518
+[32m2023-10-18T17:36:03 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:57 (14.5304 s / it)
+[32m2023-10-18T17:36:03 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T17:36:03 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T17:36:03 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T17:36:03 | __main__: [0meval_res {'val': {'overall': 32.61}}
+[32m2023-10-18T17:42:05 | utils.basic_utils: [0mTrain Epoch: [4]  [  0/250]  eta: 1 day, 0:04:15  lr: 0.000007  loss: 3.5047  time: 346.6206  data: 331.3374  max mem: 44796 res mem: 46518
+[32m2023-10-18T18:05:53 | utils.basic_utils: [0mTrain Epoch: [4]  [100/250]  eta: 0:43:55  lr: 0.000006  loss: 2.6843  time: 14.3723  data: 0.0916  max mem: 44796 res mem: 46518
+[32m2023-10-18T18:29:04 | utils.basic_utils: [0mTrain Epoch: [4]  [200/250]  eta: 0:13:07  lr: 0.000006  loss: 3.2881  time: 14.9611  data: 0.0728  max mem: 44796 res mem: 46518
+[32m2023-10-18T18:33:19 | utils.basic_utils: [0mTrain Epoch: [4]  [249/250]  eta: 0:00:13  lr: 0.000005  loss: 3.0052  time: 1.5146  data: 0.0001  max mem: 44796 res mem: 46518
+[32m2023-10-18T18:33:19 | utils.basic_utils: [0mTrain Epoch: [4] Total time: 0:57:01 (13.6849 s / it)
+[32m2023-10-18T18:33:20 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 3.0154
+[32m2023-10-18T18:33:20 | __main__: [0mEvaluating val split...
+[32m2023-10-18T18:33:28 | __main__: [0mStart generating results.
+[32m2023-10-18T18:38:45 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:15:19    time: 316.7408  data: 310.8863  max mem: 44796 res mem: 46518
+[32m2023-10-18T18:42:22 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.0515  data: 4.8165  max mem: 44796 res mem: 46518
+[32m2023-10-18T18:42:22 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:53 (14.4207 s / it)
+[32m2023-10-18T18:42:22 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T18:42:22 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T18:42:22 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T18:42:22 | __main__: [0meval_res {'val': {'overall': 33.57}}
+[32m2023-10-18T18:48:44 | utils.basic_utils: [0mTrain Epoch: [5]  [  0/250]  eta: 1 day, 1:45:21  lr: 0.000005  loss: 3.0333  time: 370.8843  data: 311.3756  max mem: 44796 res mem: 46518
+[32m2023-10-18T19:11:17 | utils.basic_utils: [0mTrain Epoch: [5]  [100/250]  eta: 0:42:40  lr: 0.000005  loss: 2.7586  time: 13.8170  data: 1.5584  max mem: 44796 res mem: 46518
+[32m2023-10-18T19:33:48 | utils.basic_utils: [0mTrain Epoch: [5]  [200/250]  eta: 0:12:44  lr: 0.000004  loss: 2.3762  time: 12.8882  data: 0.3335  max mem: 44796 res mem: 46518
+[32m2023-10-18T19:39:30 | utils.basic_utils: [0mTrain Epoch: [5]  [249/250]  eta: 0:00:13  lr: 0.000004  loss: 2.5816  time: 2.6525  data: 0.0664  max mem: 44796 res mem: 46518
+[32m2023-10-18T19:39:30 | utils.basic_utils: [0mTrain Epoch: [5] Total time: 0:56:56 (13.6664 s / it)
+[32m2023-10-18T19:39:30 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 2.7551
+[32m2023-10-18T19:39:30 | __main__: [0mEvaluating val split...
+[32m2023-10-18T19:39:34 | __main__: [0mStart generating results.
+[32m2023-10-18T19:44:47 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:12:57    time: 312.8965  data: 306.6644  max mem: 44796 res mem: 46518
+[32m2023-10-18T19:48:32 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.3899  data: 5.1093  max mem: 44796 res mem: 46518
+[32m2023-10-18T19:48:32 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:58 (14.5497 s / it)
+[32m2023-10-18T19:48:33 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T19:48:33 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T19:48:33 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T19:48:33 | __main__: [0meval_res {'val': {'overall': 35.21}}
+[32m2023-10-18T19:54:07 | utils.basic_utils: [0mTrain Epoch: [6]  [  0/250]  eta: 22:27:48  lr: 0.000004  loss: 1.9832  time: 323.4757  data: 274.0431  max mem: 44796 res mem: 46518
+[32m2023-10-18T20:17:13 | utils.basic_utils: [0mTrain Epoch: [6]  [100/250]  eta: 0:42:19  lr: 0.000003  loss: 2.6347  time: 15.0259  data: 2.7520  max mem: 44796 res mem: 46518
+[32m2023-10-18T20:40:37 | utils.basic_utils: [0mTrain Epoch: [6]  [200/250]  eta: 0:12:54  lr: 0.000003  loss: 2.2880  time: 14.2485  data: 0.0593  max mem: 44796 res mem: 46518
+[32m2023-10-18T20:45:32 | utils.basic_utils: [0mTrain Epoch: [6]  [249/250]  eta: 0:00:13  lr: 0.000002  loss: 2.5546  time: 2.6315  data: 0.0001  max mem: 44796 res mem: 46518
+[32m2023-10-18T20:45:32 | utils.basic_utils: [0mTrain Epoch: [6] Total time: 0:56:48 (13.6340 s / it)
+[32m2023-10-18T20:45:32 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 2.5640
+[32m2023-10-18T20:45:32 | __main__: [0mEvaluating val split...
+[32m2023-10-18T20:45:42 | __main__: [0mStart generating results.
+[32m2023-10-18T20:51:01 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:16:16    time: 318.2801  data: 312.8247  max mem: 44796 res mem: 46518
+[32m2023-10-18T20:54:34 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.0176  data: 4.7677  max mem: 44796 res mem: 46518
+[32m2023-10-18T20:54:34 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:51 (14.3738 s / it)
+[32m2023-10-18T20:54:34 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T20:54:34 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T20:54:34 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T20:54:34 | __main__: [0meval_res {'val': {'overall': 35.04}}
+[32m2023-10-18T21:00:14 | utils.basic_utils: [0mTrain Epoch: [7]  [  0/250]  eta: 23:34:40  lr: 0.000002  loss: 1.8296  time: 339.5219  data: 324.2681  max mem: 44796 res mem: 46518
+[32m2023-10-18T21:23:04 | utils.basic_utils: [0mTrain Epoch: [7]  [100/250]  eta: 0:42:18  lr: 0.000002  loss: 2.9018  time: 13.3867  data: 1.5960  max mem: 44796 res mem: 46518
+[32m2023-10-18T21:47:04 | utils.basic_utils: [0mTrain Epoch: [7]  [200/250]  eta: 0:13:03  lr: 0.000001  loss: 2.6479  time: 15.4911  data: 3.9816  max mem: 44796 res mem: 46518
+[32m2023-10-18T21:51:37 | utils.basic_utils: [0mTrain Epoch: [7]  [249/250]  eta: 0:00:13  lr: 0.000001  loss: 2.4420  time: 1.5384  data: 0.0001  max mem: 44796 res mem: 46518
+[32m2023-10-18T21:51:37 | utils.basic_utils: [0mTrain Epoch: [7] Total time: 0:57:03 (13.6925 s / it)
+[32m2023-10-18T21:51:38 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 2.4645
+[32m2023-10-18T21:51:38 | __main__: [0mEvaluating val split...
+[32m2023-10-18T21:51:42 | __main__: [0mStart generating results.
+[32m2023-10-18T21:56:53 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:12:09    time: 311.5988  data: 305.2047  max mem: 44796 res mem: 46518
+[32m2023-10-18T22:00:41 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.2164  data: 4.9712  max mem: 44796 res mem: 46518
+[32m2023-10-18T22:00:41 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:59 (14.5732 s / it)
+[32m2023-10-18T22:00:41 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T22:00:41 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T22:00:41 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T22:00:41 | __main__: [0meval_res {'val': {'overall': 35.85}}
+[32m2023-10-18T22:07:24 | utils.basic_utils: [0mTrain Epoch: [8]  [  0/250]  eta: 1 day, 2:13:15  lr: 0.000001  loss: 2.4460  time: 377.5816  data: 291.7806  max mem: 44796 res mem: 46518
+[32m2023-10-18T22:30:25 | utils.basic_utils: [0mTrain Epoch: [8]  [100/250]  eta: 0:43:30  lr: 0.000001  loss: 2.2651  time: 15.3404  data: 3.7506  max mem: 44796 res mem: 46518
+[32m2023-10-18T22:53:11 | utils.basic_utils: [0mTrain Epoch: [8]  [200/250]  eta: 0:12:57  lr: 0.000001  loss: 2.8601  time: 14.0550  data: 3.7627  max mem: 44796 res mem: 46518
+[32m2023-10-18T22:58:10 | utils.basic_utils: [0mTrain Epoch: [8]  [249/250]  eta: 0:00:13  lr: 0.000001  loss: 2.7166  time: 2.4456  data: 0.2858  max mem: 44796 res mem: 46518
+[32m2023-10-18T22:58:10 | utils.basic_utils: [0mTrain Epoch: [8] Total time: 0:57:02 (13.6917 s / it)
+[32m2023-10-18T22:58:10 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 2.4052
+[32m2023-10-18T22:58:10 | __main__: [0mEvaluating val split...
+[32m2023-10-18T22:58:15 | __main__: [0mStart generating results.
+[32m2023-10-18T23:03:31 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:14:59    time: 316.2046  data: 311.0349  max mem: 44796 res mem: 46518
+[32m2023-10-18T23:07:12 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.0525  data: 4.7969  max mem: 44796 res mem: 46518
+[32m2023-10-18T23:07:12 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:56 (14.5131 s / it)
+[32m2023-10-18T23:07:12 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-18T23:07:12 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-18T23:07:12 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-18T23:07:12 | __main__: [0meval_res {'val': {'overall': 36.0}}
+[32m2023-10-18T23:13:12 | utils.basic_utils: [0mTrain Epoch: [9]  [  0/250]  eta: 1 day, 0:08:02  lr: 0.000001  loss: 2.4180  time: 347.5304  data: 297.8611  max mem: 44796 res mem: 46518
+[32m2023-10-18T23:36:24 | utils.basic_utils: [0mTrain Epoch: [9]  [100/250]  eta: 0:43:03  lr: 0.000001  loss: 2.1501  time: 13.2342  data: 0.1201  max mem: 44796 res mem: 46518
+[32m2023-10-18T23:59:57 | utils.basic_utils: [0mTrain Epoch: [9]  [200/250]  eta: 0:13:04  lr: 0.000001  loss: 2.4614  time: 16.1049  data: 0.0793  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:04:22 | utils.basic_utils: [0mTrain Epoch: [9]  [249/250]  eta: 0:00:13  lr: 0.000001  loss: 2.2222  time: 2.2261  data: 0.0001  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:04:22 | utils.basic_utils: [0mTrain Epoch: [9] Total time: 0:56:58 (13.6723 s / it)
+[32m2023-10-19T00:04:22 | __main__: [0mAveraged train stats: lr: 0.0000  loss: 2.3715
+[32m2023-10-19T00:04:22 | __main__: [0mEvaluating val split...
+[32m2023-10-19T00:04:26 | __main__: [0mStart generating results.
+[32m2023-10-19T00:09:42 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:14:50    time: 315.9647  data: 310.0373  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:13:24 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.1817  data: 4.9119  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:13:24 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:57 (14.5363 s / it)
+[32m2023-10-19T00:13:24 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/val_latest.json
+[32m2023-10-19T00:13:24 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-19T00:13:24 | __main__: [0mSkip eval test split. All test_types ['val']
+[32m2023-10-19T00:13:24 | __main__: [0meval_res {'val': {'overall': 36.12}}
+[32m2023-10-19T00:13:37 | __main__: [0mTraining time 11:04:30
+[32m2023-10-19T00:13:37 | __main__: [0mbest epoch 9
+[32m2023-10-19T00:13:37 | __main__: [0mCheckpoints and Logs saved at /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full
+
+[32m2023-10-19T00:13:56 | __main__: [0m===========> START eval_after_training [['val', 'test']]
+[32m2023-10-19T00:13:56 | __main__: [0mconfig: 
+{'dataset_name': 'anet', 'data_root': '/home/wiss/zhang/nfs/Anet_sing', 'anno_root_downstream': '/home/wiss/zhang/Jinhe/singularity/anno_downstream_ori', 'train_file': [['/nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video']], 'test_types': ['val', 'test'], 'test_file': {'val': ['/nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video'], 'test': ['/nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video']}, 'stop_key': 'val', 'answer_list': '/nfs/data2/zhang/AnetQA/qa_train/answer_list.json', 'text_encoder': 'bert-base-uncased', 'text_decoder': 'bert-base-uncased', 'bert_config': 'configs/config_bert.json', 'vit_type': 'beit', 'vit_zoo': {'beit': 'microsoft/beit-base-patch16-224-pt22k-ft22k'}, 'vit_name_or_pretrained_path': '${vit_zoo[${vit_type}]}', 'temporal_vision_encoder': {'enable': True, 'num_layers': 2, 'update_pooler_embed': False}, 'add_temporal_embed': True, 'image_res': 224, 'embed_dim': 256, 'video_input': {'num_frames': 4, 'reader': 'decord', 'sample_type': 'rand', 'num_frames_test': 4, 'sample_type_test': 'middle'}, 'batch_size': {'image': 128, 'video': 64}, 'batch_size_test': {'image': 64, 'video': 64}, 'k_test': 128, 'temp': 0.07, 'eos': '[SEP]', 'max_q_len': 25, 'max_a_len': 5, 'optimizer': {'opt': 'adamW', 'lr': 1e-05, 'opt_betas': [0.9, 0.999], 'weight_decay': 0.02, 'max_grad_norm': -1, 'different_lr': {'enable': False, 'module_names': [], 'lr': 0.001}}, 'scheduler': {'sched': 'cosine', 'epochs': 10, 'min_lr_multi': 0.1, 'warmup_epochs': 0.5, 'num_training_steps': 2500, 'num_warmup_steps': 125.0}, 'output_dir': '/home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/eval_after_training', 'pretrained_path': '/home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/ckpt_best.pth', 'resume': False, 'evaluate': True, 'eval_frame_ensemble': 'concat', 'device': 'cuda', 'seed': 42, 'log_freq': 100, 'dist_url': 'env://', 'distributed': True, 'fp16': True, 'debug': False, 'num_workers': 24, 'wandb': {'enable': False, 'entity': 'gengyuanzhang', 'project': 'sb_qa_anet'}, '12365': None, 'rank': 0, 'world_size': 2, 'gpu': 0, 'dist_backend': 'nccl', 'result_dir': '/home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/eval_after_training'}
+[32m2023-10-19T00:13:56 | __main__: [0mtrain_file: [['/nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json', '/home/wiss/zhang/nfs/Anet_sing', 'video']]
+[32m2023-10-19T00:13:56 | __main__: [0mCreating vqa QA datasets
+[32m2023-10-19T00:13:57 | tasks.shared_utils: [0mCreating model
+[32m2023-10-19T00:14:00 | models.model_retrieval_base: [0mLoading vit pre-trained weights from huggingface microsoft/beit-base-patch16-224-pt22k-ft22k.
+[32m2023-10-19T00:14:03 | models.model_retrieval_base: [0mInit new model with new image size 224, and load weights.
+[32m2023-10-19T00:14:05 | models.model_retrieval_base: [0m_IncompatibleKeys(missing_keys=['encoder.layer.0.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.1.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.2.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.3.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.4.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.5.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.6.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.7.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.8.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.9.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.10.attention.attention.relative_position_bias.relative_position_index', 'encoder.layer.11.attention.attention.relative_position_bias.relative_position_index'], unexpected_keys=[])
+[32m2023-10-19T00:14:05 | models.model_retrieval_base: [0mBuild text_encoder bert-base-uncased
+[32m2023-10-19T00:14:08 | models.model_retrieval_base: [0mBuild text_encoder bert-base-uncased, done!
+[32m2023-10-19T00:14:08 | models.model_retrieval_base: [0mBuild temporal_vision_encoder (#layer=2), randomly initialised.
+[32m2023-10-19T00:14:08 | models.model_retrieval_base: [0mBuild temporal_vision_encoder, done!
+[32m2023-10-19T00:14:08 | models.model_vqa: [0mBuild text_decoder bert-base-uncased
+[32m2023-10-19T00:14:10 | models.model_vqa: [0mBuild text_decoder bert-base-uncased, done!
+[32m2023-10-19T00:14:10 | utils.optimizer: [0moptimizer -- lr=1e-05 wd=0.02 len(p)=220
+[32m2023-10-19T00:14:10 | utils.optimizer: [0moptimizer -- lr=1e-05 wd=0 len(p)=349
+[32m2023-10-19T00:14:10 | tasks.shared_utils: [0mLoading checkpoint from /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/ckpt_best.pth
+[32m2023-10-19T00:14:22 | models.utils: [0mLoad temporal_embeddings, lengths: 4-->4
+[32m2023-10-19T00:14:22 | tasks.shared_utils: [0m<All keys matched successfully>
+[32m2023-10-19T00:14:22 | tasks.shared_utils: [0mLoaded checkpoint from /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/ckpt_best.pth
+[32m2023-10-19T00:14:22 | __main__: [0mStart evaluation
+[32m2023-10-19T00:14:22 | __main__: [0mEvaluating val split...
+[32m2023-10-19T00:14:26 | __main__: [0mStart generating results.
+[32m2023-10-19T00:19:46 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:17:07    time: 319.6500  data: 314.5507  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:23:24 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.0993  data: 4.8742  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:23:24 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:08:57 (14.5341 s / it)
+[32m2023-10-19T00:23:24 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/eval_after_training/val_latest.json
+[32m2023-10-19T00:23:24 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-19T00:23:24 | __main__: [0mEvaluating test split...
+[32m2023-10-19T00:23:29 | __main__: [0mStart generating results.
+[32m2023-10-19T00:28:52 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:19:11    time: 323.0208  data: 317.9800  max mem: 44796 res mem: 46518

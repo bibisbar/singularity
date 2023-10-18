@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
-#SBATCH --job-name=test_qa
-#SBATCH --output=test_qa.out
-#SBATCH --error=test_qa.err
+#SBATCH --job-name=sl_qa_eval
+#SBATCH --output=sl_qa_eval.out
+#SBATCH --error=sl_qa_eval.err
 # debug info
 
 dataset=$1  # one of [vqa, msrvtt, anet]
@@ -11,7 +11,7 @@ save_dirname=$3  # under the root dir of pretrained_path
 mode=$4  # [local, slurm]
 ngpus=$5  # int
 
-output_dir=/home/wiss/zhang/Jinhe/singularity/test_model/${save_dirname}
+output_dir=$(dirname $pretrained_path)/${save_dirname}
 config_path=./configs/qa_${dataset}.yaml
 
 if [[ ${dataset} != "vqa" ]] && [[ ${dataset} != "msrvtt" ]] && \

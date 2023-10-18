@@ -25,7 +25,7 @@ class ImageQADataset(ImageVideoBaseDataset):
     def __len__(self):
         return len(self.anno_list)
 
-    def get_answers_with_weights(self, raw_answers):
+    def get_answers_with_weights(self, raw_answers):# -> tuple[list, list]:
         if isinstance(raw_answers, str):
             raw_answers = [raw_answers]
         answer_weight = {}
@@ -42,6 +42,7 @@ class ImageQADataset(ImageVideoBaseDataset):
 
     def __getitem__(self, index):
         ann = self.anno_list[index]
+        
         image, index = self.load_and_transform_media_data(index)
 
         question = pre_text(ann["question"])
@@ -49,7 +50,7 @@ class ImageQADataset(ImageVideoBaseDataset):
             answers, weights = self.get_answers_with_weights(ann["answer"])
             return image, question, answers, weights
         else:  # self.mode == "eval":
-            question_id = ann["question_id"]
+            question_id = ann["qa_id"]
             return image, question, question_id
 
 

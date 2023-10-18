@@ -1,21 +1,22 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
-#SBATCH --job-name=test_qa
-#SBATCH --output=test_qa.out
-#SBATCH --error=test_qa.err
+#SBATCH --job-name=test_ret
+#SBATCH --output=test_ret.out
+#SBATCH --error=test_ret.err
+#SBATCH --exclude=worker-2
 # debug info
 
-dataset=$1  # one of [vqa, msrvtt, anet]
+dataset=$1  # coco, flickr, msrvtt, ..., see complete list below
 pretrained_path=$2  # path to pth file
 save_dirname=$3  # under the root dir of pretrained_path
 mode=$4  # [local, slurm]
 ngpus=$5  # int
+MASTER_PORT=$6
 
-output_dir=/home/wiss/zhang/Jinhe/singularity/test_model/${save_dirname}
-config_path=./configs/qa_${dataset}.yaml
-
-if [[ ${dataset} != "vqa" ]] && [[ ${dataset} != "msrvtt" ]] && \
-  [[ ${dataset} != "anet" ]]; then
+if [[ ${dataset} != "coco" ]] && [[ ${dataset} != "flickr" ]] && \
+  [[ ${dataset} != "msrvtt" ]] && [[ ${dataset} != "didemo" ]] && \
+  [[ ${dataset} != "anet" ]] && [[ ${dataset} != "ssv2_label" ]] && \
+  [[ ${dataset} != "ssv2_template" ]] && [[ ${dataset} != "moviegraph" ]]; then
   echo "Does not support dataset ${dataset}"
   exit 1
 fi
@@ -30,12 +31,15 @@ if [ ! -f ${pretrained_path} ]; then
   exit 1
 fi
 
+output_dir=/home/wiss/zhang/Jinhe/singularity/test_model/${save_dirname}
+config_path=./configs/ret_${dataset}.yaml
+
 ### save code copy 
-# project_dir=$PWD
-# if [ -d ${output_dir} ]; then
-#   echo "Dir ${output_dir} already exist. Exit."
-#   exit 1
-# fi
+project_dir=$PWD
+if [ -d ${output_dir} ]; then
+  echo "Dir ${output_dir} already exist. Exit."
+  exit 1
+fi
 # mkdir -p ${output_dir}
 # cd .. 
 # code_dir=${output_dir}/code
@@ -63,9 +67,9 @@ if [[ ${mode} == "slurm" ]]; then
   export PYTHONPATH=${PYTHONPATH}:.
   echo "PYTHONPATH: ${PYTHONPATH}"
 
-
+ 
   python \
-  tasks/vqa.py \
+  tasks/retrieval.py \
   ${config_path} \
   output_dir=${output_dir} \
   pretrained_path=${pretrained_path} \
@@ -83,7 +87,7 @@ elif [[ ${mode} == "local" ]]; then
   --nproc_per_node=${ngpus} \
   --rdzv_backend=c10d \
   --rdzv_endpoint=${rdzv_endpoint} \
-  tasks/vqa.py \
+  tasks/retrieval.py \
   ${config_path} \
   output_dir=${output_dir} \
   pretrained_path=${pretrained_path} \
@@ -93,5 +97,6 @@ else
   echo "mode expects one of [local, slurm], got ${mode}."
 fi
 ############### ======> Your training scripts [END] 
+
 
 

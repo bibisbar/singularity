@@ -321,8 +321,8 @@ class SingularityRetrievalBase(nn.Module):
                 manipulation = 'counter_rel_ori'
             elif image_feat.size(0) == 591:
                 manipulation = 'counter_int_ori'
-            elif image_feat.size(0) == 591:
-                manipulation = 'counter_attr_ori'
+            # elif image_feat.size(0) == 591:
+            #     manipulation = 'counter_attr_ori'
             elif image_feat.size(0) == 535:
                 manipulation = 'counter_act_ori'
             else:

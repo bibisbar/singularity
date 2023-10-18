@@ -36,6 +36,8 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
         logger.info(f"Loading checkpoint from {config.pretrained_path}")
         checkpoint = torch.load(config.pretrained_path, map_location="cpu")
         state_dict = checkpoint["model"]
+        
+        print("state_dict.keys(): ", state_dict.keys())
 
         if config.evaluate:
             pass

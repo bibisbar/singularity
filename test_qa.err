@@ -1,0 +1,4 @@
+Loading /nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json:   0%|          | 0/32050 [00:00<?, ?it/s]Loading /nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json: 100%|██████████| 32050/32050 [00:00<00:00, 522127.40it/s]
+Loading /nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json:   0%|          | 0/4695 [00:00<?, ?it/s]Loading /nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json: 100%|██████████| 4695/4695 [00:00<00:00, 507427.78it/s]
+Loading /nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json:   0%|          | 0/4695 [00:00<?, ?it/s]Loading /nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json: 100%|██████████| 4695/4695 [00:00<00:00, 523785.97it/s]
+slurmstepd: error: *** JOB 1131279 ON worker-4 CANCELLED AT 2023-10-18T23:36:39 ***

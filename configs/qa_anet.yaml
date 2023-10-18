@@ -1,14 +1,15 @@
 dataset_name: anet
-data_root: ${oc.env:SL_DATA_DIR}/videos_images
-anno_root_downstream: ${oc.env:SL_DATA_DIR}/anno_downstream
+data_root: /home/wiss/zhang/nfs/Anet_sing
+anno_root_downstream: /home/wiss/zhang/Jinhe/singularity/anno_downstream_ori
 train_file:
-  - ['${anno_root_downstream}/anet_qa_train.json', '${data_root}/activity_net_2fps_360', video]
+  - ['/nfs/data2/zhang/AnetQA/qa_train/qa_train_light.json', '/home/wiss/zhang/nfs/Anet_sing', video]
 test_types: [val, ] # one of [minival, test]
 test_file:
-  val: ['${anno_root_downstream}/anet_qa_val.json', '${data_root}/activity_net_2fps_360', video]
-  test: ['${anno_root_downstream}/anet_qa_test.json', '${data_root}/activity_net_2fps_360', video]
+  val: ['/nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+  test: ['/nfs/data2/zhang/AnetQA/qa_val/qa_val_light.json', '/home/wiss/zhang/nfs/Anet_sing', video]
+
 stop_key: val  #  one of the key in `test_file`
-answer_list: ${anno_root_downstream}/anet_qa_answer_list.json # list of answer words
+answer_list: /nfs/data2/zhang/AnetQA/qa_train/answer_list_light.json # list of answer words
 
 text_encoder: bert-base-uncased
 text_decoder: bert-base-uncased
@@ -34,7 +35,7 @@ video_input:  # input -- not used
 
 batch_size:
   image: 128
-  video: 32
+  video: 64
 batch_size_test:
   image: 64
   video: 64
@@ -80,6 +81,6 @@ num_workers: 24
 
 wandb:
   enable: False
-  entity: None   # username or teamname to store the runs, see https://docs.wandb.ai/ref/python/init
+  entity: gengyuanzhang   # username or teamname to store the runs, see https://docs.wandb.ai/ref/python/init
   project: vqa  # setup in your command line
 

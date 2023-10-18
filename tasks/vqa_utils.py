@@ -265,7 +265,7 @@ def eval_simple_qa_acc(gt_data_or_path, pred_data_or_path):
     if isinstance(pred_data_or_path, str):
         pred_data_or_path = json.load(open(pred_data_or_path, "r"))
     true_or_false_list = []
-    gt_qid2answer = {d["question_id"]: d["answer"] for d in gt_data_or_path}
+    gt_qid2answer = {d["qa_id"]: d["answer"] for d in gt_data_or_path}
     pred_qid2answer = {d["question_id"]: d["answer"] for d in pred_data_or_path}
     missing_qids = []
     for qid, answer in gt_qid2answer.items():
