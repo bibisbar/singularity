@@ -1,8 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=test_ret
-#SBATCH --output=test_ret.out
-#SBATCH --error=test_ret.err
+
 #SBATCH --exclude=worker-2
 # debug info
 

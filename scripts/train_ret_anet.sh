@@ -1,7 +1,8 @@
 #!/bin/bash
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 #SBATCH --job-name=sl_ret
-#SBATCH --nodelist=worker-6
+#SBATCH --output=test.out
+#SBATCH --error=test.err
 # debug info
 # can add MASTER_PORT to control port for distributed training
 exp_name=$1  # note we added ${corpus} prefix automatically
@@ -24,7 +25,7 @@ if [[ ${mode} != "slurm" ]] && [[ ${mode} != "local" ]]; then
   exit 1
 fi
 
-output_dir=/home/wiss/zhang/Jinhe/singularity/paper_results/ret_${dataset}/${dataset}_${exp_name}
+output_dir=/home/wiss/zhang/Jinhe/singularity/neg/ret_${dataset}/${dataset}_${exp_name}
 config_path=./configs/ret_${dataset}.yaml
 echo "output dir >> ${output_dir}"
 

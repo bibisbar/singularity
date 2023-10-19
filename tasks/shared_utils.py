@@ -103,7 +103,9 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
             temp_embed_old=state_dict["temporal_embeddings"],
             temp_embed_new=model_without_ddp.temporal_embeddings.data
         )
-
+        # print the latest model
+        print("model_without_ddp: ", model_without_ddp)
+        print("model_without_ddp.state_dict().keys(): ", model_without_ddp.state_dict().keys())
         msg = model_without_ddp.load_state_dict(state_dict, strict=False)
         logger.info(msg)
         logger.info(f"Loaded checkpoint from {config.pretrained_path}")

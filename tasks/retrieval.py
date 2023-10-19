@@ -50,6 +50,7 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
     model_without_ddp = model.module if config.distributed else model
     iterator = metric_logger.log_every(train_loader, log_freq, header)
     for i, (media_type, (image, text, idx)) in enumerate(iterator):
+        print('text in iter', text)
         image = image.to(device, non_blocking=True)
         idx = idx.to(device, non_blocking=True)
         text_input = tokenizer(
@@ -121,7 +122,8 @@ def main(config):
         )
     if is_main_process() and config.wandb.enable:
         wandb.watch(model)
-
+    #TODO 
+    # freeze the vision encoder and text encoder
     best = 0
     best_epoch = 0
 

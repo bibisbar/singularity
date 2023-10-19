@@ -228,3 +228,11 @@ rdzv_endpoint: worker-6:12365
 [32m2023-10-19T00:23:24 | __main__: [0mEvaluating test split...
 [32m2023-10-19T00:23:29 | __main__: [0mStart generating results.
 [32m2023-10-19T00:28:52 | utils.basic_utils: [0m[evaluation] Generating answers:  [ 0/37]  eta: 3:19:11    time: 323.0208  data: 317.9800  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:32:38 | utils.basic_utils: [0m[evaluation] Generating answers:  [36/37]  eta: 0:00:14    time: 6.2527  data: 5.0018  max mem: 44796 res mem: 46518
+[32m2023-10-19T00:32:38 | utils.basic_utils: [0m[evaluation] Generating answers: Total time: 0:09:08 (14.8269 s / it)
+[32m2023-10-19T00:32:38 | dataset.utils: [0mresult file saved to /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/eval_after_training/test_latest.json
+[32m2023-10-19T00:32:38 | tasks.vqa_utils: [0mMissing predictions for 0 questions, example[:3] []
+[32m2023-10-19T00:32:38 | __main__: [0meval_res {'val': {'overall': 36.12}, 'test': {'overall': 36.12}}
+[32m2023-10-19T00:32:38 | __main__: [0mTraining time 0:18:15
+[32m2023-10-19T00:32:38 | __main__: [0mbest epoch 0
+[32m2023-10-19T00:32:38 | __main__: [0mCheckpoints and Logs saved at /home/wiss/zhang/Jinhe/singularity/qa_anet/anetqa_train_qa_full/eval_after_training

@@ -49,6 +49,10 @@ class SingularityRetrievalBase(nn.Module):
 
         image_embeds, pooled_image_embeds = self.encode_image(image)
         text_embeds, pooled_text_embeds = self.encode_text(text)
+        print('text in forward', text_embeds.shape)
+        print('pooled_text_embeds in forward', pooled_text_embeds.shape)
+        print('image in forward', image_embeds.shape)
+        print('pooled_image_embeds in forward', pooled_image_embeds.shape)
 
         loss_ita, sim_i2t, sim_t2i = self.get_contrastive_loss(
             pooled_image_embeds, pooled_text_embeds, idx)
@@ -262,12 +266,15 @@ class SingularityRetrievalBase(nn.Module):
 
         with torch.no_grad():
             sim_i2t_targets = self.get_mask(sim_i2t, idx=idx, normalize=True)
+            print('sim_i2t_targets in get_contrastive_loss', sim_i2t_targets)
             sim_t2i_targets = sim_i2t_targets
 
         loss_i2t = -torch.sum(
             F.log_softmax(sim_i2t, dim=1) * sim_i2t_targets, dim=1).mean()
         loss_t2i = -torch.sum(
             F.log_softmax(sim_t2i, dim=1) * sim_t2i_targets, dim=1).mean()
+        
+        loss_v2t_with_neg = 0
 
         loss_ita = (loss_i2t + loss_t2i) / 2
         return loss_ita, sim_i2t, sim_t2i
@@ -289,59 +296,61 @@ class SingularityRetrievalBase(nn.Module):
         if self.config.evaluate:
             manipulation = ''
             
-            # if image_feat.size(0) == 184:
-            #     manipulation = 'temporal_contact_swap_ori'
-            # elif image_feat.size(0) == 62:
-            #     manipulation = 'temporal_action_swap_ori'
-            # elif image_feat.size(0) == 102:
-            #     manipulation = 'neighborhood_same_entity_ori'
-            # elif image_feat.size(0) == 35:
-            #     manipulation = 'neighborhood_different_entity_ori'
-            # elif image_feat.size(0) == 935:
-            #     manipulation = 'counter_spatial_ori'
-            # elif image_feat.size(0) == 1008:
-            #     manipulation = 'counter_contact_ori'
-            # elif image_feat.size(0) == 1168:
-            #     manipulation = 'counter_action_ori'
-            # elif image_feat.size(0) == 818:
-            #     manipulation = 'counter_attribute_ori'
-            # else:
-            #     #throw an exception
-            #     raise Exception('Unknown manipulation type')
-            
-            if image_feat.size(0) == 563:
-                manipulation = 'temporal_int_ori'
-            elif image_feat.size(0) == 489:
-                manipulation = 'temporal_act_ori'
-            elif image_feat.size(0) == 160:
+            if image_feat.size(0) == 184:
+                manipulation = 'temporal_contact_swap_ori'
+            elif image_feat.size(0) == 62:
+                manipulation = 'temporal_action_swap_ori'
+            elif image_feat.size(0) == 102:
                 manipulation = 'neighborhood_same_entity_ori'
-            elif image_feat.size(0) == 597:
-                manipulation = 'neighborhood_diff_entity_ori'
-            elif image_feat.size(0) == 583:
-                manipulation = 'counter_rel_ori'
-            elif image_feat.size(0) == 591:
-                manipulation = 'counter_int_ori'
-            # elif image_feat.size(0) == 591:
-            #     manipulation = 'counter_attr_ori'
-            elif image_feat.size(0) == 535:
-                manipulation = 'counter_act_ori'
+            elif image_feat.size(0) == 35:
+                manipulation = 'neighborhood_different_entity_ori'
+            elif image_feat.size(0) == 935:
+                manipulation = 'counter_spatial_ori'
+            elif image_feat.size(0) == 1008:
+                manipulation = 'counter_contact_ori'
+            elif image_feat.size(0) == 1168:
+                manipulation = 'counter_action_ori'
+            elif image_feat.size(0) == 818:
+                manipulation = 'counter_attribute_ori'
             else:
                 #throw an exception
                 raise Exception('Unknown manipulation type')
             
+            # if image_feat.size(0) == 563:
+            #     manipulation = 'temporal_int_ori'
+            # elif image_feat.size(0) == 489:
+            #     manipulation = 'temporal_act_ori'
+            # elif image_feat.size(0) == 160:
+            #     manipulation = 'neighborhood_same_entity_ori'
+            # elif image_feat.size(0) == 597:
+            #     manipulation = 'neighborhood_diff_entity_ori'
+            # elif image_feat.size(0) == 583:
+            #     manipulation = 'counter_rel_ori'
+            # elif image_feat.size(0) == 591:
+            #     manipulation = 'counter_int_ori'
+            # # elif image_feat.size(0) == 591:
+            # #     manipulation = 'counter_attr_ori'
+            # elif image_feat.size(0) == 535:
+            #     manipulation = 'counter_act_ori'
+            # else:
+                # #throw an exception
+                # raise Exception('Unknown manipulation type')
+            
                 
-            print("saving image and text features of type: ", manipulation)
-            print(text_feat.size())
-            print(image_feat.size())
-            text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
-            image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
-            torch.save(text_feat, text_feat_save_path)
-            torch.save(image_feat, image_feat_save_path)
-            # check if the features are saved
-            import os
-            print(os.path.exists(text_feat_save_path))
-            print(os.path.exists(image_feat_save_path))
-            print("saved image and text features of type: ", manipulation)
+            # print("saving image and text features of type: ", manipulation)
+            # print(text_feat.size())
+            # print(image_feat.size())
+            # text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
+            # image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
+            # torch.save(text_feat, text_feat_save_path)
+            # torch.save(image_feat, image_feat_save_path)
+            # # check if the features are saved
+            # import os
+            # print(os.path.exists(text_feat_save_path))
+            # print(os.path.exists(image_feat_save_path))
+            # print("saved image and text features of type: ", manipulation)
+        print('text_feat in get_sim', text_feat.shape)
+        print('image_feat in get_sim', image_feat.shape)
         sim_i2t = torch.einsum("mld,nd->mln", image_feat, text_feat).mean(1) / t  # (N, N)
         
         sim_t2i = sim_i2t.T

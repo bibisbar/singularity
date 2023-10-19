@@ -1,8 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=test_qa
-#SBATCH --output=test_qa.out
-#SBATCH --error=test_qa.err
+
 # debug info
 
 dataset=$1  # one of [vqa, msrvtt, anet]
