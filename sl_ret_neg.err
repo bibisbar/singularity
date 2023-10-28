@@ -1,0 +1,83 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+wandb: Currently logged in as: gengyuanzhang (use `wandb login --relogin` to force relogin)
+wandb: wandb version 0.15.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+wandb: Tracking run with wandb version 0.12.9
+wandb: Syncing run anet_anet_neg_0
+wandb:  View project at https://wandb.ai/gengyuanzhang/sb_ret_anet
+wandb:  View run at https://wandb.ai/gengyuanzhang/sb_ret_anet/runs/3o2815op
+wandb: Run data is saved locally in /home/wiss/zhang/Jinhe/singularity/wandb/run-20231020_152137-3o2815op
+wandb: Run `wandb offline` to turn off syncing.
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_train_1_neg.json:   0% 0/9155 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_train_1_neg.json: 100% 9155/9155 [00:00<00:00, 589898.50it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap.json:   0% 0/184 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap.json: 100% 184/184 [00:00<00:00, 599651.85it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap_mani.json:   0% 0/184 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap_mani.json: 100% 184/184 [00:00<00:00, 617401.55it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap.json:   0% 0/62 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap.json: 100% 62/62 [00:00<00:00, 471954.35it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap_mani.json:   0% 0/62 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap_mani.json: 100% 62/62 [00:00<00:00, 468552.88it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity.json:   0% 0/102 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity.json: 100% 102/102 [00:00<00:00, 553452.79it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity_mani.json:   0% 0/102 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity_mani.json: 100% 102/102 [00:00<00:00, 531452.18it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity.json:   0% 0/35 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity.json: 100% 35/35 [00:00<00:00, 368845.83it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity_mani.json:   0% 0/35 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity_mani.json: 100% 35/35 [00:00<00:00, 377379.54it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial.json:   0% 0/935 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial.json: 100% 935/935 [00:00<00:00, 717466.93it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial_mani.json:   0% 0/935 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial_mani.json: 100% 935/935 [00:00<00:00, 626465.53it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact.json:   0% 0/1008 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact.json: 100% 1008/1008 [00:00<00:00, 61843.34it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact_mani.json:   0% 0/1008 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact_mani.json: 100% 1008/1008 [00:00<00:00, 69687.29it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action.json:   0% 0/1168 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action.json: 100% 1168/1168 [00:00<00:00, 173659.95it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action_mani.json:   0% 0/1168 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action_mani.json: 100% 1168/1168 [00:00<00:00, 739687.01it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute.json:   0% 0/818 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute.json: 100% 818/818 [00:00<00:00, 739586.26it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute_mani.json:   0% 0/818 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute_mani.json: 100% 818/818 [00:00<00:00, 743916.02it/s]
+[W reducer.cpp:1303] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1303] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+Traceback (most recent call last):
+  File "tasks/retrieval.py", line 250, in <module>
+  File "tasks/retrieval.py", line 178, in main
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 69, in evaluation_wrapper
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 192, in evaluation
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 45, in extract_vision_feats
+  File "/home/wiss/zhang/Jinhe/singularity/utils/basic_utils.py", line 163, in log_every
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 354, in __iter__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 305, in _get_iterator
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 900, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 102, in Queue
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/queues.py", line 42, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 67, in Lock
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 162, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 59, in __init__
+OSError: [Errno 24] Too many open files
+WARNING:torch.distributed.elastic.multiprocessing.api:Sending process 1370612 closing signal SIGTERM
+ERROR:torch.distributed.elastic.multiprocessing.api:failed (exitcode: 1) local_rank: 1 (pid: 1370613) of binary: /home/wiss/zhang/anaconda3/envs/probe-sl/bin/python
+Traceback (most recent call last):
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/bin/torchrun", line 33, in <module>
+    sys.exit(load_entry_point('torch==1.10.1', 'console_scripts', 'torchrun')())
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 345, in wrapper
+    return f(*args, **kwargs)
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/run.py", line 719, in main
+    run(args)
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/run.py", line 713, in run
+    )(*cmd_args)
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/launcher/api.py", line 131, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/launcher/api.py", line 261, in launch_agent
+    failures=result.failures,
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+tasks/retrieval.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2023-10-20_17:25:23
+  host      : worker-6
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 1370613)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

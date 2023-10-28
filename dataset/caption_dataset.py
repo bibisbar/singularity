@@ -15,6 +15,8 @@ class ImgTxtRetTrainDataset(ImageVideoBaseDataset):
     def __init__(self, ann_file, transform, has_multi_vision_gt=False):
         super(ImgTxtRetTrainDataset, self).__init__()
         self.anno_list = load_anno(ann_file)
+        
+        # print('self.anno_list', self.anno_list)
         self.transform = transform
         # each caption has multiple image as ground_truth, e.g., ssv2
         self.has_multi_vision_gt = has_multi_vision_gt
@@ -32,10 +34,30 @@ class ImgTxtRetTrainDataset(ImageVideoBaseDataset):
 
     def __getitem__(self, index):
         ann = self.anno_list[index]
+        
         image, index = self.load_and_transform_media_data(index)
+        
         caption = pre_text(ann["caption"])
+        
         key = ann["caption"] if self.has_multi_vision_gt else basename(ann["image"])
-        return image, caption, self.match_ids[key]
+        negative_text_1 = ann["negative1"]
+        negative_text_2 = ann["negative2"]
+        negative_text_3 = ann["negative3"]
+        negative_text_4 = ann["negative4"]
+        negative_text_5 = ann["negative5"]
+        negative_text_6 = ann["negative6"]
+        negative_text_7 = ann["negative7"]
+        #apply pre_text to negative_text_list
+        negative_text1 = pre_text(negative_text_1)
+        negative_text2 = pre_text(negative_text_2)
+        negative_text3 = pre_text(negative_text_3)
+        negative_text4 = pre_text(negative_text_4)
+        negative_text5 = pre_text(negative_text_5)
+        negative_text6 = pre_text(negative_text_6)
+        negative_text7 = pre_text(negative_text_7)
+        
+
+        return image, caption, self.match_ids[key], negative_text1, negative_text2, negative_text3, negative_text4, negative_text5, negative_text6, negative_text7
 
 
 class VidTxtRetTrainDataset(ImgTxtRetTrainDataset):
@@ -146,6 +168,14 @@ def preprocess_para_retrieval_data(anno_list):
     for d in anno_list:
         d["caption"] = " ".join(d.pop("caption"))
         processed_anno_list.append(d)
+        #only do the following if negative is not None
+        if d.get("negative1", None) is not None:
+            d["negative1"] = " ".join(d.pop("negative1"))
+            processed_anno_list.append(d)
+            d["negative2"] = " ".join(d.pop("negative2"))
+            processed_anno_list.append(d)
+            d["negative3"] = " ".join(d.pop("negative3"))
+            processed_anno_list.append(d)
     return processed_anno_list
 
 

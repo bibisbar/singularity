@@ -120,4 +120,130 @@ sbatch scripts/test_ret.sh anet  /home/wiss/zhang/nfs/anetqa_train_qa_full/ckpt_
 
 sbatch scripts/test.sh anet  /home/wiss/zhang/Jinhe/singularity/paper_results/ret_moviegraph/moviegraph_moviegraph_train_1_Seed42/ckpt_best.pth model_test_Qa_model local 1 \ test_types=[val] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
 
-sbatch scripts/train_ret_anet.sh anet_neg anet 1 local 22347 pretrained_path=/home/wiss/zhang/nfs/anetqa_train_qa_full/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ batch_size.video=4 \ scheduler.epoch=30 \ train_type=anet_ret_train_3.json \ seed=3
+sbatch scripts/train_ret_anet.sh anet_neg anet 1 local 22347 pretrained_path=/home/wiss/zhang/nfs/anetqa_train_qa_full/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ batch_size.video=2 \ scheduler.epoch=30 
+
+/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0.001 anet 2 local 22349 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=30 \ batch_size.video=32
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0.001_4 anet 4 local 22350 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=30 \ batch_size.video=32
+
+
+
+#qa freeze
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze anet 2 local 22351 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_improve anet 2 local 22352 pretrained_path=/home/wiss/zhang/nfs/anet_anet_neg_0.001/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_improve_2 anet 2 local 22352 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.001_4/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_improve_3 anet 2 local 22353 pretrained_path=/home/wiss/zhang/nfs/anet_anet_neg_0.001_4/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_anet_neg_1/ckpt_best.pth anet_eval_improvement local 1 22357 \ test_types=[temporal_contact_swap,temporal_action_swap,neighborhood_same_entity,neighborhood_diff_entity,counter_spatial,counter_contact,counter_action,counter_attribute] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_anet_neg_1/ckpt_best.pth anet_eval_improvement_mani local 1 22358 \ test_types=[temporal_contact_swap_mani,temporal_action_swap_mani,neighborhood_same_entity_mani,neighborhood_diff_entity_mani,counter_spatial_mani,counter_contact_mani,counter_action_mani,counter_attribute_mani] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+/home/wiss/zhang/nfs/anet_anet_neg_0.1/ckpt_best.pth
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_anet_neg_0.1/ckpt_best.pth anet_eval_improvement_mani local 1 22359 \ test_types=[temporal_contact_swap_mani,temporal_action_swap_mani,neighborhood_same_entity_mani,neighborhood_diff_entity_mani,counter_spatial_mani,counter_contact_mani,counter_action_mani,counter_attribute_mani] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_anet_neg_0.1/ckpt_best.pth anet_eval_improvement local 1 22360 \ test_types=[temporal_contact_swap,temporal_action_swap,neighborhood_same_entity,neighborhood_diff_entity,counter_spatial,counter_contact,counter_action,counter_attribute] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+/home/wiss/zhang/nfs/anet_anet_neg_0.001/ckpt_best.pth
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_anet_neg_0.001/ckpt_best.pth anet_eval_improvement_mani local 1 22361 \ test_types=[temporal_contact_swap_mani,temporal_action_swap_mani,neighborhood_same_entity_mani,neighborhood_diff_entity_mani,counter_spatial_mani,counter_contact_mani,counter_action_mani,counter_attribute_mani] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_anet_neg_0.001/ckpt_best.pth anet_eval_improvement local 1 22362 \ test_types=[temporal_contact_swap,temporal_action_swap,neighborhood_same_entity,neighborhood_diff_entity,counter_spatial,counter_contact,counter_action,counter_attribute] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+\temporal
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0.1_temp anet 2 local 22354 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=30 \ batch_size.video=32
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_1_temp anet 1 local 22355 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=30 \ batch_size.video=32
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0.5_temp anet 2 local 22356 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=30 \ batch_size.video=32
+
+
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_temp/ckpt_best.pth anet_eval_improvement local 1 22363 \ test_types=[temporal_contact_swap,temporal_action_swap,neighborhood_same_entity,neighborhood_diff_entity,counter_spatial,counter_contact,counter_action,counter_attribute] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_temp/ckpt_best.pth anet_eval_improvement_mani local 1 22364 \ test_types=[temporal_contact_swap_mani,temporal_action_swap_mani,neighborhood_same_entity_mani,neighborhood_diff_entity_mani,counter_spatial_mani,counter_contact_mani,counter_action_mani,counter_attribute_mani] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.1_temp/ckpt_best.pth anet_eval_improvement local 1 22365 \ test_types=[temporal_contact_swap,temporal_action_swap,neighborhood_same_entity,neighborhood_diff_entity,counter_spatial,counter_contact,counter_action,counter_attribute] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.1_temp/ckpt_best.pth anet_eval_improvement_mani local 1 22366 \ test_types=[temporal_contact_swap_mani,temporal_action_swap_mani,neighborhood_same_entity_mani,neighborhood_diff_entity_mani,counter_spatial_mani,counter_contact_mani,counter_action_mani,counter_attribute_mani] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_1_temp/ckpt_best.pth anet_eval_improvement local 1 22367 \ test_types=[temporal_contact_swap,temporal_action_swap,neighborhood_same_entity,neighborhood_diff_entity,counter_spatial,counter_contact,counter_action,counter_attribute] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_1_temp/ckpt_best.pth anet_eval_improvement_mani local 1 22368 \ test_types=[temporal_contact_swap_mani,temporal_action_swap_mani,neighborhood_same_entity_mani,neighborhood_diff_entity_mani,counter_spatial_mani,counter_contact_mani,counter_action_mani,counter_attribute_mani] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+sbatch scripts/train_vqa_full.sh anetqa_train_anet_neg_0.5_temp anet 2 local 22410 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_neg_0.1_temp anet 2 local 22510 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.1_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_neg_0.5_temp anet 2 local 22511 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_neg_1_temp anet 2 local 22512 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_1_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+#qa freeze
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_new_subset anet 1 local 22351 pretrained_path=/home/wiss/zhang/nfs/anet_anet_train_1_Seed42/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_improve anet 2 local 22352 pretrained_path=/home/wiss/zhang/nfs/anet_anet_neg_0.001/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_improve_2 anet 2 local 22352 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.001_4/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_improve_3 anet 2 local 22353 pretrained_path=/home/wiss/zhang/nfs/anet_anet_neg_0.001_4/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_neg_0.1_temp_new_subset anet 2 local 33333 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.1_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_neg_0.5_temp_new_subset anet 2 local 33334 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_vqa_full.sh anetqa_train_qa_full_freeze_neg_1_temp_new_subset anet 2 local 33335 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_1_temp/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0_from_scratch anet 2 local 44443 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=0
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0.5_from_scratch anet 2 local 44444 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=0.5
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_1_from_scratch anet 2 local 44445 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=1
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_5_from_scratch anet 2 local 44446 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=5
+
+
+sbatch scripts/train_vqa_full.sh anet_neg_0_from_scratch anet 2 local 44447 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0_from_scratch/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+sbatch scripts/train_vqa_full.sh anet_neg_0.5_from_scratch anet 2 local 44448 pretrained_path=/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_from_scratch/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+sbatch scripts/train_vqa_full.sh anet_neg_1_from_scratch anet 2 local 44450 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_1_from_scratch/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+sbatch scripts/train_vqa_full.sh anet_neg_5_from_scratch anet 2 local 44461 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_5_from_scratch/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+sbatch scripts/train_vqa_full.sh anet_neg_0.5_from_scratch_temp_neg anet 2 local 44462 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.5_from_scratch_temp_neg/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+sbatch scripts/train_ret_anet_neg.sh anet_neg_0.5_from_scratch_temp_neg anet 2 local 44449 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=0.5 \ temp_neg=True 
+
+sbatch scripts/eval_anet.sh anet /home/wiss/zhang/Jinhe/singularity/qa_anet/anet_neg_0_from_scratch/ckpt_best.pth anet_eval_0_from_sc_light_answer local 1 \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ answer_list=/nfs/data2/zhang/AnetQA/qa_train/answer_list_light.json
+
+sbatch scripts/eval_anet.sh anet /home/wiss/zhang/Jinhe/singularity/qa_anet/anet_neg_0.5_from_scratch/ckpt_best.pth anet_eval_0.5_from_sc_light_answer local 1 \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ answer_list=/nfs/data2/zhang/AnetQA/qa_train/answer_list_light.json
+
+
+
+sbatch scripts/eval_anet.sh anet /home/wiss/zhang/Jinhe/singularity/qa_anet/anet_neg_1_from_scratch/ckpt_best.pth anet_eval_1_from_sc_light_answer local 1 44451 \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ answer_list=/nfs/data2/zhang/AnetQA/qa_train/answer_list_light.json
+
+sbatch scripts/eval_anet.sh anet /home/wiss/zhang/Jinhe/singularity/qa_anet/anet_neg_5_from_scratch/ckpt_best.pth anet_eval_5_from_sc_light_answer local 1 44452 \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ answer_list=/nfs/data2/zhang/AnetQA/qa_train/answer_list_light.json
+
+sbatch scripts/eval_anet.sh anet /home/wiss/zhang/Jinhe/singularity/qa_anet/anet_neg_0_from_scratch/ckpt_best.pth anet_eval_0_from_sc_full_answer local 1 44523\ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ answer_list=/nfs/data2/zhang/AnetQA/qa_train/answer_list.json
+
+
+
+/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.5_from_scratch_temp_neg/ckpt_best.pth
+
+sbatch scripts/train_ret_anet_neg.sh test anet 2 local 44463 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.5_from_scratch_temp_neg/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=0.5 \ temp_neg=True 

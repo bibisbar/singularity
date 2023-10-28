@@ -33,6 +33,7 @@ class SingularityRetrievalBase(nn.Module):
         self.text_proj = nn.Linear(self.text_width, self.embed_dim)
 
         self.temp = nn.Parameter(torch.ones([]) * config.temp)
+        self.temp_negative = nn.Parameter(torch.ones([]) * config.temp_neg_ratio)
         self.itm_head = nn.Linear(self.text_width, 2)
 
         # video temporal embedding,
@@ -43,19 +44,28 @@ class SingularityRetrievalBase(nn.Module):
         if config.temporal_vision_encoder.enable:
             self.temporal_vision_encoder = self.build_temporal_vision_encoder()
 
-    def forward(self, image, text, idx):
+    def forward(self, image, text, idx, neg_text1=None, neg_text2=None, neg_text3=None, neg_text4=None, neg_text5=None, neg_text6=None, neg_text7=None):
         # ================= Dual Encoder ITC loss ================ #
         self.clip_contrastive_temperature()
-
+        self.clip_contrastive_temperature_negative()
+        print('idx in forward', idx)
         image_embeds, pooled_image_embeds = self.encode_image(image)
         text_embeds, pooled_text_embeds = self.encode_text(text)
+        neg_text1_embeds, pooled_text1_embeds = self.encode_text(neg_text1)
+        neg_text2_embeds, pooled_text2_embeds = self.encode_text(neg_text2)
+        neg_text3_embeds, pooled_text3_embeds = self.encode_text(neg_text3)
+        neg_text4_embeds, pooled_text4_embeds = self.encode_text(neg_text4)
+        neg_text5_embeds, pooled_text5_embeds = self.encode_text(neg_text5)
+        neg_text6_embeds, pooled_text6_embeds = self.encode_text(neg_text6)
+        neg_text7_embeds, pooled_text7_embeds = self.encode_text(neg_text7)
         print('text in forward', text_embeds.shape)
         print('pooled_text_embeds in forward', pooled_text_embeds.shape)
         print('image in forward', image_embeds.shape)
         print('pooled_image_embeds in forward', pooled_image_embeds.shape)
+        print('neg_text1_embeds in forward', neg_text1_embeds.shape)
 
         loss_ita, sim_i2t, sim_t2i = self.get_contrastive_loss(
-            pooled_image_embeds, pooled_text_embeds, idx)
+            pooled_image_embeds, pooled_text_embeds, idx, pooled_text1_embeds, pooled_text2_embeds, pooled_text3_embeds, pooled_text4_embeds, pooled_text5_embeds, pooled_text6_embeds, pooled_text7_embeds)
 
         # ================= Multi-Modal Encoder ITM loss ================ #
         image_atts = torch.ones(
@@ -242,6 +252,10 @@ class SingularityRetrievalBase(nn.Module):
     def clip_contrastive_temperature(self, min_val=0.001, max_val=0.5):
         """Seems only used during pre-training"""
         self.temp.clamp_(min_val, max_val)
+        
+    def clip_contrastive_temperature_negative(self, min_val=0.001, max_val=0.5):
+        """Seems only used during pre-training"""
+        self.temp_negative.clamp_(min_val, max_val)
 
     @torch.no_grad()
     def get_mask(self, sim, idx=None, normalize=False):
@@ -260,23 +274,137 @@ class SingularityRetrievalBase(nn.Module):
             mask.fill_diagonal_(1)
         return mask  # `1` mark valid/matched location
 
-    def get_contrastive_loss(self, pooled_image_embeds, pooled_text_embeds, idx=None):
+    def get_contrastive_loss(self, pooled_image_embeds, pooled_text_embeds, idx=None, neg_text1_embeds=None, neg_text2_embeds=None, neg_text3_embeds=None, neg_text4_embeds=None, neg_text5_embeds=None, neg_text6_embeds=None, neg_text7_embeds=None):
         sim_i2t, sim_t2i = self.get_sim(
             pooled_image_embeds, pooled_text_embeds, t=self.temp)
-
+        
         with torch.no_grad():
             sim_i2t_targets = self.get_mask(sim_i2t, idx=idx, normalize=True)
-            print('sim_i2t_targets in get_contrastive_loss', sim_i2t_targets)
+            #send sim_i2t_targets to gpu
+            sim_i2t_targets = sim_i2t_targets.to(pooled_image_embeds.device)
+            #create a new tensor with same size as sim_i2t_targets and only diagonal value is 1
+            sim_i2t_targets_inbatch = torch.eye(sim_i2t_targets.size(0))
+            #send sim_i2t_targets to gpu
+            sim_i2t_targets_inbatch = sim_i2t_targets_inbatch.to(neg_text1_embeds.device)
+            
             sim_t2i_targets = sim_i2t_targets
+            #send sim_t2i_targets to gpu
+            sim_t2i_targets = sim_t2i_targets.to(pooled_image_embeds.device)
+            
 
-        loss_i2t = -torch.sum(
-            F.log_softmax(sim_i2t, dim=1) * sim_i2t_targets, dim=1).mean()
-        loss_t2i = -torch.sum(
-            F.log_softmax(sim_t2i, dim=1) * sim_t2i_targets, dim=1).mean()
+        image_proj = self.vision_proj
+        text_proj = self.text_proj
+        #init all neg_text_embeds to None
+        neg_text1_embeds_inbatch = None
+        neg_text2_embeds_inbatch = None
+        neg_text3_embeds_inbatch = None
+        neg_text4_embeds_inbatch = None
+        neg_text5_embeds_inbatch = None
+        neg_text6_embeds_inbatch = None
+        neg_text7_embeds_inbatch = None
+        pos_text_feat = F.normalize(text_proj(pooled_text_embeds), dim=-1)
+        image_feat = F.normalize(image_proj(pooled_image_embeds), dim=-1)
         
-        loss_v2t_with_neg = 0
+        bs = len(pooled_image_embeds)
+        if self.config.evaluate is False:
+            
+            for i in range(len(pooled_image_embeds)):    #len:bsz
+                neg_text1_embeds_inbatch = F.normalize(text_proj(neg_text1_embeds[i]), dim=-1)
+                neg_text2_embeds_inbatch = F.normalize(text_proj(neg_text2_embeds[i]), dim=-1)
+                neg_text3_embeds_inbatch = F.normalize(text_proj(neg_text3_embeds[i]), dim=-1)
+                neg_text4_embeds_inbatch = F.normalize(text_proj(neg_text4_embeds[i]), dim=-1)
+                neg_text5_embeds_inbatch = F.normalize(text_proj(neg_text5_embeds[i]), dim=-1)
+                neg_text6_embeds_inbatch = F.normalize(text_proj(neg_text6_embeds[i]), dim=-1)
+                neg_text7_embeds_inbatch = F.normalize(text_proj(neg_text7_embeds[i]), dim=-1)
+           
+                pos_image_feat = image_feat[i]
+                #pos_image_feat size 4 * 256
+                #make it 1 * 4 * 256
+                
+                pos_image_feat = pos_image_feat.unsqueeze(0)
+                #print('pos_iamge_feat in get_contrastive_loss', pos_image_feat.shape)
+                #concate all neg_text_embeds
+                #neg_text1_embeds_inbatch : 256
+                #unsqueeze to 1 * 256
+                #caoncate all neg_text_embeds size 7 * 256
+                neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0), neg_text4_embeds_inbatch.unsqueeze(0), neg_text5_embeds_inbatch.unsqueeze(0), neg_text6_embeds_inbatch.unsqueeze(0), neg_text7_embeds_inbatch.unsqueeze(0)), 0)
+                
+                sim_i2t_pos = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_feat).mean(1) / self.temp
+                #print('sim_i2t_pos in get_contrastive_loss', sim_i2t_pos.shape)
+                if self.config.temp_neg:
+                    print('temp_neg is True')
+                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
+                elif self.config.temp_neg is False:
+                    print('temp_neg is False')
+                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp_negative
+                #print('sim_i2t_neg in get_contrastive_loss', sim_i2t_neg.shape)
+                #concate pos and neg sim_i2t
+                sim_i2t_extended = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
+                #print('sim_i2t_extended in get_contrastive_loss', sim_i2t_extended.shape)
+                if i == 0:
+                    extended_sim_matrix  = sim_i2t_extended   
+                else:
+                    extended_sim_matrix = torch.cat((extended_sim_matrix, sim_i2t_extended), 0)
+                
+            #print('extended_sim_matrix in get_contrastive_loss', extended_sim_matrix)
+            
+            
+            
+            #get max value matrix of each row in extended_sim_matrix
+            #max_value = torch.max(extended_sim_matrix,dim=1)[0]
+            
+            #print('max_value in get_contrastive_loss', max_value)
+            #print('max_value in get_contrastive_loss', max_value.shape)
+            #avoid nan
+            #extended_sim_matrix = extended_sim_matrix - max_value.unsqueeze(1)
+            #print('extended_sim_matrix in get_contrastive_loss', extended_sim_matrix)
+            #print('extended_sim_matrix in get_contrastive_loss', extended_sim_matrix)
+            softmax_vt = torch.exp(extended_sim_matrix)
+            #print('softmax_vt in get_contrastive_loss', softmax_vt)
+            
+            part_1 = torch.sum(softmax_vt[:, 0:bs], dim=1)
+            part_2 = torch.sum(softmax_vt[:, bs+1:], dim=1)
+            
+            
+            sim_i2t_inbatch = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
+            
+            # sim_i2t_inbatch minus max_value
+            #sim_i2t_inbatch = sim_i2t_inbatch - max_value.unsqueeze(1)
+            #print('sim_i2t_inbatch in get_contrastive_loss', sim_i2t_inbatch)
+            loss_i2t_orig = -torch.sum(
+                F.log_softmax(sim_i2t_inbatch, dim=1) * sim_i2t_targets_inbatch, dim=1).mean()
+            
+            sim_i2t_inbatch = torch.exp(sim_i2t_inbatch)
+            
+            
+            #get loss
+            gt = torch.diag(sim_i2t_inbatch)
+            loss_i2t_exp = -torch.log(gt/(part_1 + self.config.neg_ratio * part_2))
+            print('neg_ratio in get_contrastive_loss', self.config.neg_ratio)
+            loss_i2t = torch.mean(loss_i2t_exp)
+            
+            loss_t2i = -torch.sum(
+                F.log_softmax(sim_t2i, dim=1) * sim_t2i_targets, dim=1).mean()
+            
+            loss_ita = (loss_i2t + loss_t2i) / 2
+            
+            
+            
+            
+            print('loss_i2t_orig in get_contrastive_loss', loss_i2t_orig)
+            print('loss_i2t in get_contrastive_loss', loss_i2t)
+        
+        
+        
+        if self.config.evaluate:
+            loss_i2t = -torch.sum(
+                F.log_softmax(sim_i2t, dim=1) * sim_i2t_targets, dim=1).mean()
+            loss_t2i = -torch.sum(
+                F.log_softmax(sim_t2i, dim=1) * sim_t2i_targets, dim=1).mean()
+            
+            loss_v2t_with_neg = 0
 
-        loss_ita = (loss_i2t + loss_t2i) / 2
+            loss_ita = (loss_i2t + loss_t2i) / 2
         return loss_ita, sim_i2t, sim_t2i
 
     def get_sim(self, pooled_image_embeds, pooled_text_embeds, t=1):
@@ -297,60 +425,47 @@ class SingularityRetrievalBase(nn.Module):
             manipulation = ''
             
             if image_feat.size(0) == 184:
-                manipulation = 'temporal_contact_swap_ori'
+                manipulation = 'temporal_contact_swap_mani'
             elif image_feat.size(0) == 62:
-                manipulation = 'temporal_action_swap_ori'
+                manipulation = 'temporal_action_swap_mani'
             elif image_feat.size(0) == 102:
-                manipulation = 'neighborhood_same_entity_ori'
+                manipulation = 'neighborhood_same_entity_mani'
             elif image_feat.size(0) == 35:
-                manipulation = 'neighborhood_different_entity_ori'
+                manipulation = 'neighborhood_different_entity_mani'
             elif image_feat.size(0) == 935:
-                manipulation = 'counter_spatial_ori'
+                manipulation = 'counter_spatial_mani'
             elif image_feat.size(0) == 1008:
-                manipulation = 'counter_contact_ori'
+                manipulation = 'counter_contact_mani'
             elif image_feat.size(0) == 1168:
-                manipulation = 'counter_action_ori'
+                manipulation = 'counter_action_mani'
             elif image_feat.size(0) == 818:
-                manipulation = 'counter_attribute_ori'
+                manipulation = 'counter_attribute_mani'
             else:
                 #throw an exception
                 raise Exception('Unknown manipulation type')
             
             # if image_feat.size(0) == 563:
-            #     manipulation = 'temporal_int_ori'
+            #     manipulation = 'temporal_int_mani'
             # elif image_feat.size(0) == 489:
-            #     manipulation = 'temporal_act_ori'
+            #     manipulation = 'temporal_act_mani'
             # elif image_feat.size(0) == 160:
-            #     manipulation = 'neighborhood_same_entity_ori'
+            #     manipulation = 'neighborhood_same_entity_mani'
             # elif image_feat.size(0) == 597:
-            #     manipulation = 'neighborhood_diff_entity_ori'
+            #     manipulation = 'neighborhood_diff_entity_mani'
             # elif image_feat.size(0) == 583:
-            #     manipulation = 'counter_rel_ori'
+            #     manipulation = 'counter_rel_mani'
             # elif image_feat.size(0) == 591:
-            #     manipulation = 'counter_int_ori'
+            #     manipulation = 'counter_int_mani'
             # # elif image_feat.size(0) == 591:
-            # #     manipulation = 'counter_attr_ori'
+            # #     manipulation = 'counter_attr_mani'
             # elif image_feat.size(0) == 535:
-            #     manipulation = 'counter_act_ori'
+            #     manipulation = 'counter_act_mani'
             # else:
                 # #throw an exception
                 # raise Exception('Unknown manipulation type')
             
                 
-            # print("saving image and text features of type: ", manipulation)
-            # print(text_feat.size())
-            # print(image_feat.size())
-            # text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
-            # image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
-            # torch.save(text_feat, text_feat_save_path)
-            # torch.save(image_feat, image_feat_save_path)
-            # # check if the features are saved
-            # import os
-            # print(os.path.exists(text_feat_save_path))
-            # print(os.path.exists(image_feat_save_path))
-            # print("saved image and text features of type: ", manipulation)
-        print('text_feat in get_sim', text_feat.shape)
-        print('image_feat in get_sim', image_feat.shape)
+        #     
         sim_i2t = torch.einsum("mld,nd->mln", image_feat, text_feat).mean(1) / t  # (N, N)
         
         sim_t2i = sim_i2t.T

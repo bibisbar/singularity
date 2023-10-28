@@ -5,10 +5,11 @@ import os
 
 #this file is to calculate the similarity among postitive, negative text and video and then save the result in csv file
 
-catogary = '/home/wiss/zhang/Jinhe/singularity/paper_results/ret_anet/anet_anet_train_3_Seed3/anet_eval_3_Seed3'
-experiment = 'anet_eval_3_Seed3'
+catogary = '/home/wiss/zhang/nfs/anet_neg_ckpt/anet_anet_neg_0.5_temp/anet_eval_improvement'
+experiment = 'anet_eval_improvement_anet_neg_0.5_temp'
 #manipulation = ['temporal_int', 'temporal_act', 'neighborhood_same_entity', 'neighborhood_diff_entity', 'counter_rel', 'counter_act', 'counter_int', 'counter_attr']
 manipulation = ['temporal_contact_swap','temporal_action_swap','neighborhood_same_entity','neighborhood_different_entity','counter_spatial','counter_contact','counter_action','counter_attribute']
+#manipulation = ['temporal_contact_swap','temporal_action_swap','neighborhood_same_entity','neighborhood_different_entity','counter_spatial']
 #'counter_int', 'counter_attr' wait for adding
 
 result_path = '/home/wiss/zhang/nfs/video_prober/singularity/anetqa'
@@ -16,8 +17,8 @@ pos_text2video_result = {}
 neg_text2video_result = {}
 pos_text2neg_text_result = {}
 for i in range(len(manipulation)):
-    video_feat_path =catogary + '/image_feat_' + manipulation[i] + '_ori.pt'
-    pos_text_feat_path = catogary + '/text_feat_' + manipulation[i] + '_ori.pt'
+    video_feat_path =catogary + '/image_feat_' + manipulation[i] + '_mani.pt'
+    pos_text_feat_path = catogary + '/text_feat_' + manipulation[i] + '_mani.pt'
     neg_text_feat_path = catogary + '_mani'+'/text_feat_' + manipulation[i] + '_mani.pt'
     #load data
     video_feat = torch.load(video_feat_path,map_location=torch.device('cpu'))

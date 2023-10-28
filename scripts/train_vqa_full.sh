@@ -1,8 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:2
 #SBATCH --job-name=sl_qa_full_Answer
-#SBATCH --output=sl_qa_full_Answer.out
-#SBATCH --error=sl_qa_full_Answer.err
+
 # debug info
 
 # can add MASTER_PORT to control port for distributed training

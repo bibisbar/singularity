@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=sl_ret_eval
-#SBATCH --exclude=worker-2
+
 # debug info
 
 dataset=$1  # coco, flickr, msrvtt, ..., see complete list below

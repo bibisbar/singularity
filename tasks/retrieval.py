@@ -49,17 +49,47 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
 
     model_without_ddp = model.module if config.distributed else model
     iterator = metric_logger.log_every(train_loader, log_freq, header)
-    for i, (media_type, (image, text, idx)) in enumerate(iterator):
-        print('text in iter', text)
+    for i, (media_type, (image, text, idx, neg_text1, neg_text2, neg_text3,neg_text4,neg_text5,neg_text6,neg_text7)) in enumerate(iterator):
+        
         image = image.to(device, non_blocking=True)
         idx = idx.to(device, non_blocking=True)
         text_input = tokenizer(
             text, padding="max_length", truncation=True,
             max_length=config.max_txt_l, return_tensors="pt"
         ).to(device)
-
+        
+        # get the separate negative text at demension 1
+        neg_input1 = tokenizer(
+            neg_text1, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        neg_input2 = tokenizer(
+            neg_text2, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        neg_input3 = tokenizer(
+            neg_text3, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        neg_input4 = tokenizer(
+            neg_text4, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        neg_input5 = tokenizer(
+            neg_text5, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        neg_input6 = tokenizer(
+            neg_text6, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        neg_input7 = tokenizer(
+            neg_text7, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        
         with torch.cuda.amp.autocast(enabled=config.fp16):
-            loss_dict = model(image, text_input, idx=idx)
+            loss_dict = model(image, text_input, idx, neg_input1, neg_input2, neg_input3, neg_input4, neg_input5, neg_input6, neg_input7)
             loss = sum(loss_dict.values())
 
         optimizer.zero_grad()
@@ -79,6 +109,7 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
             metric_logger.update(**{f"{media_type}-{name}": value})
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         metric_logger.update(temperature=model_without_ddp.temp.item())
+        metric_logger.update(temp_negative=model_without_ddp.temp_negative.item())
 
         if is_main_process() and config.wandb.enable \
                 and global_step % log_freq == 0:
@@ -108,6 +139,8 @@ def main(config):
     cudnn.benchmark = True
 
     train_loaders, test_name2loaders, train_media_types = setup_dataloaders(config, mode="ret")
+    # iterrate train_loaders to get an example
+    
     num_steps_per_epoch = sum(len(d) for d in train_loaders)
     config.scheduler.num_training_steps = num_steps_per_epoch * config.scheduler.epochs
     config.scheduler.num_warmup_steps = num_steps_per_epoch * config.scheduler.warmup_epochs

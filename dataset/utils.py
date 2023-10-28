@@ -45,11 +45,12 @@ def load_anno(ann_file_list):
         fp = d[0]
         is_video = len(d) == 3 and d[2] == "video"
         cur_ann = json.load(open(fp, "r"))
+        
         iterator = trange(len(cur_ann), desc=f"Loading {fp}") \
             if is_main_process() else range(len(cur_ann))
         for idx in iterator:
-            #key = "video_id" if is_video else "image"
-            # unified to have the same key for data path
+            # key = "video_id" if is_video else "image"
+            # #unified to have the same key for data path
             # if isinstance(cur_ann[idx][key], str):
             #     video_id = cur_ann[idx][key]+'.mp4'
             #     cur_ann[idx]["image"] = join(data_root, video_id)

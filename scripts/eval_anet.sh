@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=sl_qa_eval
-#SBATCH --output=sl_qa_eval.out
-#SBATCH --error=sl_qa_eval.err
+#SBATCH --exclude=worker-3
+
 # debug info
 
 dataset=$1  # one of [vqa, msrvtt, anet]
@@ -10,9 +10,9 @@ pretrained_path=$2  # path to pth file
 save_dirname=$3  # under the root dir of pretrained_path
 mode=$4  # [local, slurm]
 ngpus=$5  # int
-
-output_dir=$(dirname $pretrained_path)/${save_dirname}
-config_path=./configs/qa_${dataset}.yaml
+master_node=$6  # hostname of master node, only used in slurm mode
+output_dir=/home/wiss/zhang/Jinhe/singularity/qa_anet/${save_dirname}
+config_path=/home/wiss/zhang/Jinhe/singularity/configs/qa_anet_full.yaml
 
 if [[ ${dataset} != "vqa" ]] && [[ ${dataset} != "msrvtt" ]] && \
   [[ ${dataset} != "anet" ]]; then

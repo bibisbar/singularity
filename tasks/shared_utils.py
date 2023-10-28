@@ -19,6 +19,10 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
     model = model_cls(config=config, tokenizer=tokenizer)
 
     model = model.to(torch.device(config.device))
+    #print model parameters to see if any are frozen
+    # print("model ori: ", model)
+    
+    
     model_without_ddp = model
     if config.distributed:
         model = torch.nn.parallel.DistributedDataParallel(
@@ -36,8 +40,9 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
         logger.info(f"Loading checkpoint from {config.pretrained_path}")
         checkpoint = torch.load(config.pretrained_path, map_location="cpu")
         state_dict = checkpoint["model"]
+        #print the value of key ' temp_negative' in state_dict
+        print("temp state_dict: ", state_dict['temp_negative'])
         
-        print("state_dict.keys(): ", state_dict.keys())
 
         if config.evaluate:
             pass
@@ -84,13 +89,13 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
                 if has_decoder and "text_encoder" in key:
                     if "layer" in key:
                         encoder_keys = key.split(".")
-                        layer_num = int(encoder_keys[4])
+                        layer_num = int(encoder_keys[3])
                         if layer_num < 9:  # configs/config_bert.fusion_layer
                             del state_dict[key]
                             continue
                         else:
                             decoder_layer_num = (layer_num-9)
-                            encoder_keys[4] = str(decoder_layer_num)
+                            encoder_keys[3] = str(decoder_layer_num)
                             encoder_key = ".".join(encoder_keys)
                     else:
                         encoder_key = key
@@ -103,14 +108,31 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
             temp_embed_old=state_dict["temporal_embeddings"],
             temp_embed_new=model_without_ddp.temporal_embeddings.data
         )
-        # print the latest model
-        print("model_without_ddp: ", model_without_ddp)
+        
+        for name, param in model.named_parameters():
+            print("name: ", name)
+            print("param.requires_grad: ", param.requires_grad)    
         print("model_without_ddp.state_dict().keys(): ", model_without_ddp.state_dict().keys())
+        #freeze all layers except the text decoder
+        for name, param in model.named_parameters():
+            if "text_decoder" not in name:
+                param.requires_grad = False
+            else:
+                param.requires_grad = True  
+        
         msg = model_without_ddp.load_state_dict(state_dict, strict=False)
+        print('check if model is frozen')
+        for name, param in model.named_parameters():
+            print("name: ", name)
+            print("param.requires_grad: ", param.requires_grad)
+            
         logger.info(msg)
         logger.info(f"Loaded checkpoint from {config.pretrained_path}")
     else:
         logger.warning("No pretrained checkpoint provided, training from scratch")
+        
 
     return model, model_without_ddp, optimizer, scheduler, scaler, tokenizer, start_epoch, global_step
+
+
 

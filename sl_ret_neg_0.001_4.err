@@ -1,0 +1,204 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+wandb: Currently logged in as: gengyuanzhang (use `wandb login --relogin` to force relogin)
+wandb: wandb version 0.15.12 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+wandb: Tracking run with wandb version 0.12.9
+wandb: Syncing run anet_anet_neg_0.001_4
+wandb:  View project at https://wandb.ai/gengyuanzhang/sb_ret_anet
+wandb:  View run at https://wandb.ai/gengyuanzhang/sb_ret_anet/runs/50s63bam
+wandb: Run data is saved locally in /home/wiss/zhang/Jinhe/singularity/wandb/run-20231020_160957-50s63bam
+wandb: Run `wandb offline` to turn off syncing.
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_train_1_neg.json:   0% 0/9155 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_train_1_neg.json: 100% 9155/9155 [00:00<00:00, 127269.05it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap.json:   0% 0/184 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap.json: 100% 184/184 [00:00<00:00, 449215.33it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap_mani.json:   0% 0/184 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap_mani.json: 100% 184/184 [00:00<00:00, 378309.77it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap.json:   0% 0/62 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap.json: 100% 62/62 [00:00<00:00, 341268.83it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap_mani.json:   0% 0/62 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap_mani.json: 100% 62/62 [00:00<00:00, 363701.89it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity.json:   0% 0/102 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity.json: 100% 102/102 [00:00<00:00, 312276.65it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity_mani.json:   0% 0/102 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity_mani.json: 100% 102/102 [00:00<00:00, 324351.03it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity.json:   0% 0/35 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity.json: 100% 35/35 [00:00<00:00, 234881.02it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity_mani.json:   0% 0/35 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity_mani.json: 100% 35/35 [00:00<00:00, 179462.89it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial.json:   0% 0/935 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial.json: 100% 935/935 [00:00<00:00, 421187.22it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial_mani.json:   0% 0/935 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial_mani.json: 100% 935/935 [00:00<00:00, 79858.15it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact.json:   0% 0/1008 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact.json: 100% 1008/1008 [00:00<00:00, 469866.46it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact_mani.json:   0% 0/1008 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact_mani.json: 100% 1008/1008 [00:00<00:00, 90394.87it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action.json:   0% 0/1168 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action.json: 100% 1168/1168 [00:00<00:00, 183701.33it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action_mani.json:   0% 0/1168 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action_mani.json: 100% 1168/1168 [00:00<00:00, 542338.88it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute.json:   0% 0/818 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute.json: 100% 818/818 [00:00<00:00, 126068.00it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute_mani.json:   0% 0/818 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute_mani.json: 100% 818/818 [00:00<00:00, 633833.49it/s]
+[W reducer.cpp:1303] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1303] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1303] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1303] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+wandb: Waiting for W&B process to finish, PID 3209978... (success).
+wandb: - 0.00MB of 0.00MB uploaded (0.00MB deduped)wandb: \ 0.00MB of 0.00MB uploaded (0.00MB deduped)wandb: | 0.00MB of 0.00MB uploaded (0.00MB deduped)wandb: / 0.00MB of 0.00MB uploaded (0.00MB deduped)wandb: - 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: | 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: / 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: - 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: | 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: / 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: - 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: | 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: / 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: - 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: | 0.00MB of 6.16MB uploaded (0.00MB deduped)wandb: / 0.11MB of 6.16MB uploaded (0.00MB deduped)wandb: - 0.32MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 0.56MB of 6.16MB uploaded (0.00MB deduped)wandb: | 0.94MB of 6.16MB uploaded (0.00MB deduped)wandb: / 1.57MB of 6.16MB uploaded (0.00MB deduped)wandb: - 2.00MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 3.47MB of 6.16MB uploaded (0.00MB deduped)wandb: | 5.12MB of 6.16MB uploaded (0.00MB deduped)wandb: / 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: - 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: | 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: / 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: - 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: \ 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: | 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb: / 6.16MB of 6.16MB uploaded (0.00MB deduped)wandb:                                                                                
+wandb: Run history:
+wandb:           temporal_contact_swap/img_r1 ▆█▄▅▃▆▃▅▄▁▅▆▄▄▄▆▄▃▄█▆▆▅▅▆▅▄▄▄▅
+wandb:          temporal_contact_swap/img_r10 █▆▅▆▆▅▃▃▄▄▃▄▅▃▅▃▃▃▂▃▃▃▂▂▂▁▁▂▂▂
+wandb:           temporal_contact_swap/img_r5 ▇█▄▅▅▄▃▂▅▁▅▅▄▃▄▃▃▅▂▄▃▄▁▂▂▂▅▃▂▃
+wandb:       temporal_contact_swap/img_r_mean ██▄▆▅▅▂▃▄▁▄▄▅▃▄▃▃▃▂▄▃▃▁▂▂▁▂▂▂▂
+wandb:           temporal_contact_swap/r_mean █▅▅▅▅▄▂▄▄▂▄▃▄▂▃▃▂▂▂▂▂▂▂▂▁▁▂▂▁▁
+wandb:           temporal_contact_swap/txt_r1 ▆▃█▃▃▁▁▄▄▅▅▄▄▄▄▅▅▃▄▂▃▃▄▃▄▄▃▄▃▄
+wandb:          temporal_contact_swap/txt_r10 █▄▅▆▅▅▄▅▅▃▄▃▄▂▃▃▂▃▂▂▂▂▃▃▁▁▂▄▂▂
+wandb:           temporal_contact_swap/txt_r5 █▄▅▄▆▅▅▇▂▅▅▃▄▃▃▃▂▄▄▃▃▃▂▃▁▄▄▃▃▂
+wandb:       temporal_contact_swap/txt_r_mean █▃▆▅▅▄▃▆▄▄▄▃▄▂▃▃▂▃▃▂▂▂▃▂▁▂▂▃▂▂
+wandb:       temporal_contact_swap_emb/img_r1 ▇▁▄▅▇▅▅▇▇▃▆▄▅▄▆█▄▆▇▄▄▇▇▄▅▆▅▄▆▇
+wandb:      temporal_contact_swap_emb/img_r10 ▃▃▅█▆▇▆▃▃▅▇▆▃▇▆▅▃▅▅▅▄▅▆▆▅▃▁▅▄▆
+wandb:       temporal_contact_swap_emb/img_r5 ▃▅▃▅█▅▃▄▄▃▄▃▄▃▅▃▄▂▃▁▃▂▂▄▄▂▃▄▃▃
+wandb:   temporal_contact_swap_emb/img_r_mean ▃▁▂▇█▆▄▃▄▂▆▃▃▄▆▅▂▃▄▁▂▄▄▄▄▂▁▄▃▅
+wandb:       temporal_contact_swap_emb/r_mean ▁▂▁▄▇▇▆▄▅▅██▆▅█▆▃▅▇▄▄▇▇▆▅▅▅▆▆█
+wandb:       temporal_contact_swap_emb/txt_r1 ▃▃▃▃▃▄█▃▁▃▃▆▅▃▇▅▃▆▅▃▆▆▆▅▆▆▆▆▆▆
+wandb:      temporal_contact_swap_emb/txt_r10 ▁▃▂▂▃▅▃▃▅▆▇█▆▆▅▅▃▅▇▇▅█▇▇▆▇▆▆▆▇
+wandb:       temporal_contact_swap_emb/txt_r5 ▂▃▂▁▇▅▆▇▇▇██▇▃▇▆▅▅▆▃▄▃▅▅▂▅▅▅▅▇
+wandb:   temporal_contact_swap_emb/txt_r_mean ▁▃▁▁▄▅▅▄▄▅▇█▆▄▆▅▄▅▆▅▅▆▆▆▅▆▆▆▆▇
+wandb:                               train/lr ███████▇▇▇▇▇▆▆▆▆▆▅▅▄▄▄▄▃▃▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁
+wandb:                      train/temperature ▁▂▃▅▅▇█████▇▇▇▆▆▆▅▄▄▄▄▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂
+wandb:                   train/video-loss_ita █▇▇▆▆▅▅▄▄▄▃▃▃▂▂▂▂▂▂▂▁▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                   train/video-loss_itm ███▇▇▇▆▆▆▆▅▅▄▄▄▃▃▃▃▃▂▃▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:           temporal_contact_swap/img_r1 9.78
+wandb:          temporal_contact_swap/img_r10 28.8
+wandb:           temporal_contact_swap/img_r5 23.37
+wandb:       temporal_contact_swap/img_r_mean 20.65
+wandb:           temporal_contact_swap/r_mean 21.47
+wandb:           temporal_contact_swap/txt_r1 11.41
+wandb:          temporal_contact_swap/txt_r10 31.52
+wandb:           temporal_contact_swap/txt_r5 23.91
+wandb:       temporal_contact_swap/txt_r_mean 22.28
+wandb:       temporal_contact_swap_emb/img_r1 13.59
+wandb:      temporal_contact_swap_emb/img_r10 41.85
+wandb:       temporal_contact_swap_emb/img_r5 28.8
+wandb:   temporal_contact_swap_emb/img_r_mean 28.08
+wandb:       temporal_contact_swap_emb/r_mean 29.35
+wandb:       temporal_contact_swap_emb/txt_r1 12.5
+wandb:      temporal_contact_swap_emb/txt_r10 46.2
+wandb:       temporal_contact_swap_emb/txt_r5 33.15
+wandb:   temporal_contact_swap_emb/txt_r_mean 30.62
+wandb:                               train/lr 0.0
+wandb:                      train/temperature 0.01716
+wandb:                   train/video-loss_ita 1.7286
+wandb:                   train/video-loss_itm 0.22596
+wandb: 
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Synced anet_anet_neg_0.001_4: https://wandb.ai/gengyuanzhang/sb_ret_anet/runs/50s63bam
+wandb: Find logs at: ./wandb/run-20231020_160957-50s63bam/logs/debug.log
+wandb: 
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_train_1_neg.json:   0%|          | 0/9155 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_train_1_neg.json: 100%|██████████| 9155/9155 [00:00<00:00, 95867.47it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap.json:   0%|          | 0/184 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap.json: 100%|██████████| 184/184 [00:00<00:00, 634142.92it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap_mani.json:   0%|          | 0/184 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_contact_swap_mani.json: 100%|██████████| 184/184 [00:00<00:00, 626930.90it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap.json:   0%|          | 0/62 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap.json: 100%|██████████| 62/62 [00:00<00:00, 512912.92it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap_mani.json:   0%|          | 0/62 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_temporal_action_swap_mani.json: 100%|██████████| 62/62 [00:00<00:00, 339486.75it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity.json:   0%|          | 0/102 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity.json: 100%|██████████| 102/102 [00:00<00:00, 519828.69it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity_mani.json:   0%|          | 0/102 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_same_entity_mani.json: 100%|██████████| 102/102 [00:00<00:00, 593368.94it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity.json:   0%|          | 0/35 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity.json: 100%|██████████| 35/35 [00:00<00:00, 423056.60it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity_mani.json:   0%|          | 0/35 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_neighborhood_diff_entity_mani.json: 100%|██████████| 35/35 [00:00<00:00, 312341.79it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial.json:   0%|          | 0/935 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial.json: 100%|██████████| 935/935 [00:00<00:00, 683575.78it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial_mani.json:   0%|          | 0/935 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_spatial_mani.json: 100%|██████████| 935/935 [00:00<00:00, 454423.43it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact.json:   0%|          | 0/1008 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact.json: 100%|██████████| 1008/1008 [00:00<00:00, 486184.27it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact_mani.json:   0%|          | 0/1008 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_contact_mani.json: 100%|██████████| 1008/1008 [00:00<00:00, 81489.89it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action.json:   0%|          | 0/1168 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action.json: 100%|██████████| 1168/1168 [00:00<00:00, 496196.40it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action_mani.json:   0%|          | 0/1168 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_action_mani.json: 100%|██████████| 1168/1168 [00:00<00:00, 758233.57it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute.json:   0%|          | 0/818 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute.json: 100%|██████████| 818/818 [00:00<00:00, 84337.67it/s]
+Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute_mani.json:   0%|          | 0/818 [00:00<?, ?it/s]Loading /home/wiss/zhang/Jinhe/singularity/Data/anetqa/anet_ret_counter_attribute_mani.json: 100%|██████████| 818/818 [00:00<00:00, 640100.87it/s]
+Traceback (most recent call last):
+  File "tasks/retrieval.py", line 252, in <module>
+  File "tasks/retrieval.py", line 245, in eval_after_training
+  File "tasks/retrieval.py", line 178, in main
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 69, in evaluation_wrapper
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 192, in evaluation
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 45, in extract_vision_feats
+  File "/home/wiss/zhang/Jinhe/singularity/utils/basic_utils.py", line 163, in log_every
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 354, in __iter__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 305, in _get_iterator
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 900, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 102, in Queue
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/queues.py", line 42, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 67, in Lock
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 162, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 59, in __init__
+OSError: [Errno 24] Too many open files
+Traceback (most recent call last):
+  File "tasks/retrieval.py", line 252, in <module>
+  File "tasks/retrieval.py", line 245, in eval_after_training
+  File "tasks/retrieval.py", line 178, in main
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 69, in evaluation_wrapper
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 192, in evaluation
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 45, in extract_vision_feats
+  File "/home/wiss/zhang/Jinhe/singularity/utils/basic_utils.py", line 163, in log_every
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 354, in __iter__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 305, in _get_iterator
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 900, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 102, in Queue
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/queues.py", line 42, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 67, in Lock
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 162, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 59, in __init__
+OSError: [Errno 24] Too many open files
+Traceback (most recent call last):
+  File "tasks/retrieval.py", line 252, in <module>
+  File "tasks/retrieval.py", line 245, in eval_after_training
+  File "tasks/retrieval.py", line 178, in main
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 69, in evaluation_wrapper
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 192, in evaluation
+  File "/home/wiss/zhang/Jinhe/singularity/tasks/retrieval_utils.py", line 45, in extract_vision_feats
+  File "/home/wiss/zhang/Jinhe/singularity/utils/basic_utils.py", line 163, in log_every
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 354, in __iter__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 305, in _get_iterator
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 900, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 102, in Queue
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/queues.py", line 42, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/context.py", line 67, in Lock
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 162, in __init__
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/synchronize.py", line 59, in __init__
+OSError: [Errno 24] Too many open files
+WARNING:torch.distributed.elastic.multiprocessing.api:Sending process 3187669 closing signal SIGTERM
+WARNING:torch.distributed.elastic.multiprocessing.api:Sending process 3187673 closing signal SIGTERM
+WARNING:torch.distributed.elastic.multiprocessing.api:Sending process 3187681 closing signal SIGTERM
+WARNING:torch.distributed.elastic.multiprocessing.api:Unable to shutdown process 3187673 via 15, forcefully exitting via 9
+ERROR:torch.distributed.elastic.multiprocessing.api:failed (exitcode: 1) local_rank: 3 (pid: 3187687) of binary: /home/wiss/zhang/anaconda3/envs/probe-sl/bin/python
+Traceback (most recent call last):
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/bin/torchrun", line 33, in <module>
+    sys.exit(load_entry_point('torch==1.10.1', 'console_scripts', 'torchrun')())
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 345, in wrapper
+    return f(*args, **kwargs)
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/run.py", line 719, in main
+    run(args)
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/run.py", line 713, in run
+    )(*cmd_args)
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/launcher/api.py", line 131, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/site-packages/torch/distributed/launcher/api.py", line 261, in launch_agent
+    failures=result.failures,
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+tasks/retrieval.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2023-10-22_16:52:24
+  host      : worker-5
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 3187687)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+/home/wiss/zhang/anaconda3/envs/probe-sl/lib/python3.7/multiprocessing/semaphore_tracker.py:144: UserWarning: semaphore_tracker: There appear to be 6 leaked semaphores to clean up at shutdown
+  len(cache))
