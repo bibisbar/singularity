@@ -55,6 +55,7 @@ class ImgTxtRetTrainDataset(ImageVideoBaseDataset):
         negative_text5 = pre_text(negative_text_5)
         negative_text6 = pre_text(negative_text_6)
         negative_text7 = pre_text(negative_text_7)
+
         
 
         return image, caption, self.match_ids[key], negative_text1, negative_text2, negative_text3, negative_text4, negative_text5, negative_text6, negative_text7
@@ -176,6 +177,14 @@ def preprocess_para_retrieval_data(anno_list):
             processed_anno_list.append(d)
             d["negative3"] = " ".join(d.pop("negative3"))
             processed_anno_list.append(d)
+            # d["negative4"] = " ".join(d.pop("negative4"))
+            # processed_anno_list.append(d)
+            # d["negative5"] = " ".join(d.pop("negative5"))
+            # processed_anno_list.append(d)
+            # d["negative6"] = " ".join(d.pop("negative6"))
+            # processed_anno_list.append(d)
+            # d["negative7"] = " ".join(d.pop("negative7"))
+            # processed_anno_list.append(d)
     return processed_anno_list
 
 

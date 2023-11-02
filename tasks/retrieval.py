@@ -33,7 +33,9 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
     metric_logger = MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", SmoothedValue(window=1, fmt="{value:.6f}"))
     metric_logger.add_meter("temperature", SmoothedValue(window=1, fmt="{value:.4f}"))
-    loss_names = ["loss_ita", "loss_itm"]
+    metric_logger.add_meter("temp_negative", SmoothedValue(window=1, fmt="{value:.4f}"))
+    loss_name_bp = ["loss_ita", "loss_itm"]
+    loss_names = ["loss_ita", "loss_itm", "loss_i2t" , "loss_t2i"]
     media_types = [loader.dataset.media_type for loader in train_loaders]
     for name in loss_names:
         for m in media_types:
@@ -90,7 +92,8 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
         
         with torch.cuda.amp.autocast(enabled=config.fp16):
             loss_dict = model(image, text_input, idx, neg_input1, neg_input2, neg_input3, neg_input4, neg_input5, neg_input6, neg_input7)
-            loss = sum(loss_dict.values())
+            #exclude "loss_i2t" , "loss_t2i" when calculating the loss
+            loss = sum(loss_dict[name] for name in loss_name_bp)
 
         optimizer.zero_grad()
         scaler.scale(loss).backward()
