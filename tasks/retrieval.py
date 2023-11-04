@@ -49,7 +49,7 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
 
     model_without_ddp = model.module if config.distributed else model
     iterator = metric_logger.log_every(train_loader, log_freq, header)
-    for i, (media_type, (image, text, idx, neg_text1, neg_text2, neg_text3,neg_text4,neg_text5,neg_text6,neg_text7)) in enumerate(iterator):
+    for i, (media_type, (image, text, idx, neg_text1, neg_text2, neg_text3,neg_text4,neg_text5,neg_text6,neg_text7, postive_text1, postive_text2, postive_text3, postive_text4, postive_text5, postive_text6, postive_text7)) in enumerate(iterator):
         
         image = image.to(device, non_blocking=True)
         idx = idx.to(device, non_blocking=True)
@@ -87,9 +87,37 @@ def train(model, train_loaders, optimizer, tokenizer, epoch, global_step,
             neg_text7, padding="max_length", truncation=True,
             max_length=config.max_txt_l, return_tensors="pt"
         ).to(device)
+        postive_input1 = tokenizer(
+            postive_text1, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input2 = tokenizer(
+            postive_text2, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input3 = tokenizer(
+            postive_text3, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input4 = tokenizer(
+            postive_text4, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input5 = tokenizer(
+            postive_text5, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input6 = tokenizer(
+            postive_text6, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input7 = tokenizer(
+            postive_text7, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
         
         with torch.cuda.amp.autocast(enabled=config.fp16):
-            loss_dict = model(image, text_input, idx, neg_input1, neg_input2, neg_input3, neg_input4, neg_input5, neg_input6, neg_input7)
+            loss_dict = model(image, text_input, idx, neg_input1, neg_input2, neg_input3, neg_input4, neg_input5, neg_input6, neg_input7, postive_input1, postive_input2, postive_input3, postive_input4, postive_input5, postive_input6, postive_input7)
             loss = sum(loss_dict.values())
 
         optimizer.zero_grad()

@@ -74,7 +74,7 @@ optimizer:
 
 scheduler:
   sched: cosine
-  epochs: 30
+  epochs: 10
   min_lr_multi: 0.1  # min_lr will be `optimizer.lr * min_lr_multi`
   warmup_epochs: 0  # float
 

@@ -47,6 +47,13 @@ class ImgTxtRetTrainDataset(ImageVideoBaseDataset):
         negative_text_5 = ann["negative5"]
         negative_text_6 = ann["negative6"]
         negative_text_7 = ann["negative7"]
+        postive_text_1 = ann["positive1"]
+        postive_text_2 = ann["positive2"]
+        postive_text_3 = ann["positive3"]
+        postive_text_4 = ann["positive4"]
+        postive_text_5 = ann["positive5"]
+        postive_text_6 = ann["positive6"]
+        postive_text_7 = ann["positive7"]
         #apply pre_text to negative_text_list
         negative_text1 = pre_text(negative_text_1)
         negative_text2 = pre_text(negative_text_2)
@@ -55,9 +62,16 @@ class ImgTxtRetTrainDataset(ImageVideoBaseDataset):
         negative_text5 = pre_text(negative_text_5)
         negative_text6 = pre_text(negative_text_6)
         negative_text7 = pre_text(negative_text_7)
+        postive_text1 = pre_text(postive_text_1)
+        postive_text2 = pre_text(postive_text_2)
+        postive_text3 = pre_text(postive_text_3)
+        postive_text4 = pre_text(postive_text_4)
+        postive_text5 = pre_text(postive_text_5)
+        postive_text6 = pre_text(postive_text_6)
+        postive_text7 = pre_text(postive_text_7)
         
 
-        return image, caption, self.match_ids[key], negative_text1, negative_text2, negative_text3, negative_text4, negative_text5, negative_text6, negative_text7
+        return image, caption, self.match_ids[key], negative_text1, negative_text2, negative_text3, negative_text4, negative_text5, negative_text6, negative_text7, postive_text1, postive_text2, postive_text3, postive_text4, postive_text5, postive_text6, postive_text7
 
 
 class VidTxtRetTrainDataset(ImgTxtRetTrainDataset):

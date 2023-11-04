@@ -247,3 +247,8 @@ sbatch scripts/eval_anet.sh anet /home/wiss/zhang/Jinhe/singularity/qa_anet/anet
 /home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.5_from_scratch_temp_neg/ckpt_best.pth
 
 sbatch scripts/train_ret_anet_neg.sh test anet 2 local 44463 pretrained_path=/home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0.5_from_scratch_temp_neg/ckpt_best.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=0.5 \ temp_neg=True 
+
+
+#mil_loss
+sbatch scripts/train_ret_anet_neg.sh mil_anet_neg_1_from_scratch anet 2 local 10000 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=1 \ temp_neg=False \ train_type=anet_ret_train_1_pos_neg.json \ wandb.enable=True
+sbatch scripts/train_ret_anet_neg.sh mil_anet_neg_0_from_scratch anet 2 local 10001 pretrained_path=/home/wiss/zhang/Jinhe/singularity/pt/singularity_temporal_17m.pth \ test_types=[temporal_contact_swap] video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ scheduler.epoch=10 \ batch_size.video=32 \ neg_ratio=0 \ temp_neg=False \ train_type=anet_ret_train_1_pos_neg.json \ wandb.enable=True

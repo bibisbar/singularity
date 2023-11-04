@@ -19,9 +19,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
     model = model_cls(config=config, tokenizer=tokenizer)
 
     model = model.to(torch.device(config.device))
-    #print model parameters to see if any are frozen
-    # print("model ori: ", model)
-    
+  
     
     model_without_ddp = model
     if config.distributed:
@@ -40,8 +38,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
         logger.info(f"Loading checkpoint from {config.pretrained_path}")
         checkpoint = torch.load(config.pretrained_path, map_location="cpu")
         state_dict = checkpoint["model"]
-        #print the value of key ' temp_negative' in state_dict
-        print("temp state_dict: ", state_dict['temp_negative'])
+        
         
 
         if config.evaluate:
@@ -91,7 +88,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
                         encoder_keys = key.split(".")
                         layer_num = int(encoder_keys[3])
                         if layer_num < 9:  # configs/config_bert.fusion_layer
-                            del state_dict[key]
+                            #del state_dict[key]
                             continue
                         else:
                             decoder_layer_num = (layer_num-9)
@@ -101,7 +98,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
                         encoder_key = key
                     decoder_key = encoder_key.replace("text_encoder", "text_decoder")
                     state_dict[decoder_key] = state_dict[key]
-                    del state_dict[key]
+                    #del state_dict[key]
 
         # load temporal_embeddings, clip or expand when necessary
         state_dict["temporal_embeddings"] = load_temp_embed_with_mismatch(
@@ -109,11 +106,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
             temp_embed_new=model_without_ddp.temporal_embeddings.data
         )
         
-        for name, param in model.named_parameters():
-            print("name: ", name)
-            print("param.requires_grad: ", param.requires_grad)    
-        print("model_without_ddp.state_dict().keys(): ", model_without_ddp.state_dict().keys())
-        #freeze all layers except the text decoder
+        
         for name, param in model.named_parameters():
             if "text_decoder" not in name:
                 param.requires_grad = False
