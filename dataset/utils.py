@@ -49,21 +49,21 @@ def load_anno(ann_file_list):
         iterator = trange(len(cur_ann), desc=f"Loading {fp}") \
             if is_main_process() else range(len(cur_ann))
         for idx in iterator:
-            # key = "video_id" if is_video else "image"
-            # #unified to have the same key for data path
-            # if isinstance(cur_ann[idx][key], str):
-            #     video_id = cur_ann[idx][key]+'.mp4'
-            #     cur_ann[idx]["image"] = join(data_root, video_id)
-            # else:  # list
-            #     cur_ann[idx]["image"] = [join(data_root, e) for e in cur_ann[idx][key]]
-            
-            key = "video" if is_video else "image"
+            key = "video_id" if is_video else "image"
+            #unified to have the same key for data path
             if isinstance(cur_ann[idx][key], str):
-                video_id = cur_ann[idx][key]
+                video_id = cur_ann[idx][key]+'.mp4'
                 cur_ann[idx]["image"] = join(data_root, video_id)
             else:  # list
                 cur_ann[idx]["image"] = [join(data_root, e) for e in cur_ann[idx][key]]
-                print('enter here')
+            
+            # key = "video" if is_video else "image"
+            # if isinstance(cur_ann[idx][key], str):
+            #     video_id = cur_ann[idx][key]
+            #     cur_ann[idx]["image"] = join(data_root, video_id)
+            # else:  # list
+            #     cur_ann[idx]["image"] = [join(data_root, e) for e in cur_ann[idx][key]]
+            #     print('enter here')
         ann += cur_ann
     return ann
 

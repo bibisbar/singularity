@@ -107,19 +107,19 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
             temp_embed_new=model_without_ddp.temporal_embeddings.data
         )
         
-        # #freeze all layers except the text decoder 
-        # for name, param in model.named_parameters():
-        #     if "text_decoder" not in name:
-        #         param.requires_grad = False
-        #     else:
-        #         param.requires_grad = True  
-        
-        # freeze all layers except the text encoder and text decoder
+        #freeze all layers except the text decoder 
         for name, param in model.named_parameters():
-            if "text_encoder" not in name and "text_decoder" not in name:
+            if "text_decoder" not in name:
                 param.requires_grad = False
             else:
-                param.requires_grad = True
+                param.requires_grad = True  
+        
+        # freeze all layers except the text encoder and text decoder
+        # for name, param in model.named_parameters():
+        #     if "text_encoder" not in name and "text_decoder" not in name:
+        #         param.requires_grad = False
+        #     else:
+        #         param.requires_grad = True
                 
                 
         msg = model_without_ddp.load_state_dict(state_dict, strict=False)
