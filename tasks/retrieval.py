@@ -221,6 +221,20 @@ def main(config):
             logger.info(f"\n{eval_res.transpose()}")
             
             eval_res.to_json(join(config.output_dir, "eval_res_latest.json"))
+            
+            #save model every epoch
+            if not config.evaluate:
+                save_obj = {
+                        "model": model_without_ddp.state_dict(),
+                        "optimizer": optimizer.state_dict(),
+                        "scheduler": scheduler.state_dict(),
+                        "scaler": scaler.state_dict(),
+                        "config": config,
+                        "epoch": epoch,
+                        "global_step": global_step,
+                    }
+                name = f"ckpt_epoch_{epoch}.pth"
+                torch.save(save_obj, join(config.output_dir, name))
 
             if not config.evaluate and cur_r_mean > best:
                 save_obj = {

@@ -88,7 +88,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
                         encoder_keys = key.split(".")
                         layer_num = int(encoder_keys[3])
                         if layer_num < 9:  # configs/config_bert.fusion_layer
-                            #del state_dict[key]
+                            del state_dict[key]
                             continue
                         else:
                             decoder_layer_num = (layer_num-9)
@@ -98,7 +98,7 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
                         encoder_key = key
                     decoder_key = encoder_key.replace("text_encoder", "text_decoder")
                     state_dict[decoder_key] = state_dict[key]
-                    #del state_dict[key]
+                    del state_dict[key]
 
         # load temporal_embeddings, clip or expand when necessary
         state_dict["temporal_embeddings"] = load_temp_embed_with_mismatch(
@@ -107,11 +107,11 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
         )
         
         
-        for name, param in model.named_parameters():
-            if "text_decoder" not in name:
-                param.requires_grad = False
-            else:
-                param.requires_grad = True  
+        # for name, param in model.named_parameters():
+        #     if "text_decoder" not in name:
+        #         param.requires_grad = False
+        #     else:
+        #         param.requires_grad = True  
         
         msg = model_without_ddp.load_state_dict(state_dict, strict=False)
         print('check if model is frozen')

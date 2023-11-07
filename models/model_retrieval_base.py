@@ -316,6 +316,10 @@ class SingularityRetrievalBase(nn.Module):
         pos_text_feat = F.normalize(text_proj(pooled_text_embeds), dim=-1)
         image_feat = F.normalize(image_proj(pooled_image_embeds), dim=-1)
         
+        #intialize alpha and beta for HN-NCE loss
+        alpha = 1
+        beta = 0.5
+        
         bs = len(pooled_image_embeds)
         if self.config.evaluate is False:
             
@@ -349,11 +353,11 @@ class SingularityRetrievalBase(nn.Module):
                 
                 sim_i2t_pos = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_feat).mean(1) / self.temp
                 #print('sim_i2t_pos in get_contrastive_loss', sim_i2t_pos.shape)
-                if self.config.temp_neg:
-                    print('temp_neg is True')
-                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
-                elif self.config.temp_neg is False:
+                if self.config.temp_neg is False:
                     print('temp_neg is False')
+                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
+                elif self.config.temp_neg is True:
+                    print('temp_neg is True')
                     sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp_negative
                 #print('sim_i2t_neg in get_contrastive_loss', sim_i2t_neg.shape)
                 #concate pos and neg sim_i2t
@@ -369,18 +373,13 @@ class SingularityRetrievalBase(nn.Module):
                 else:
                     extended_sim_matrix = torch.cat((extended_sim_matrix, sim_i2t_extended), 0)
                 
-            # print('extended_sim_matrix in get_contrastive_loss', extended_sim_matrix)
-            # print('extended_sim_matrix in get_contrastive_loss', extended_sim_matrix.shape)
+            
             softmax_vt = torch.exp(extended_sim_matrix)
-            # print('softmax_vt in get_contrastive_loss', softmax_vt)
-            # print('softmax_vt in get_contrastive_loss', softmax_vt.shape)
             
             part_1 = torch.sum(softmax_vt[:, 0:bs], dim=1)
             part_2 = torch.sum(softmax_vt[:, bs+1:bs+7], dim=1)
             part_3 = torch.sum(softmax_vt[:, bs+7:], dim=1)
-            # print('part_1 in get_contrastive_loss', part_1)
-            # print('part_2 in get_contrastive_loss', part_2)
-            # print('part_3 in get_contrastive_loss', part_3)
+            
             
             sim_i2t_inbatch = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
             
