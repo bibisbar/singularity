@@ -29,7 +29,7 @@ if [ ! -f ${pretrained_path} ]; then
   exit 1
 fi
 
-output_dir=$(dirname $pretrained_path)/${save_dirname}
+output_dir=/home/wiss/zhang/Jinhe/singularity/multi_ret/${save_dirname}
 config_path=./configs/ret_${dataset}.yaml
 
 ### save code copy 

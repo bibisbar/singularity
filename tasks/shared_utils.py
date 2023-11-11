@@ -107,17 +107,17 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
         )
         
         
-        for name, param in model.named_parameters():
-            if "text_decoder" not in name:
-                param.requires_grad = False
-            else:
-                param.requires_grad = True  
+        # for name, param in model.named_parameters():
+        #     if "text_decoder" not in name:
+        #         param.requires_grad = False
+        #     else:
+        #         param.requires_grad = True  
         
         msg = model_without_ddp.load_state_dict(state_dict, strict=False)
-        print('check if model is frozen')
-        for name, param in model.named_parameters():
-            print("name: ", name)
-            print("param.requires_grad: ", param.requires_grad)
+        # print('check if model is frozen')
+        # for name, param in model.named_parameters():
+        #     print("name: ", name)
+        #     print("param.requires_grad: ", param.requires_grad)
             
         logger.info(msg)
         logger.info(f"Loaded checkpoint from {config.pretrained_path}")

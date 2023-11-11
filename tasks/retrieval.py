@@ -18,7 +18,7 @@ from utils.config_utils import setup_main
 from utils.basic_utils import MetricLogger, SmoothedValue, setup_seed
 from utils.distributed import get_rank, is_main_process
 from dataset import MetaLoader
-from tasks.retrieval_utils import evaluation_wrapper
+from tasks.retrieval_utils import evaluation_wrapper,eval_multi_ret
 from tasks.shared_utils import setup_model
 from omegaconf import OmegaConf
 import copy
@@ -183,8 +183,7 @@ def main(config):
         )
     if is_main_process() and config.wandb.enable:
         wandb.watch(model)
-    #TODO 
-    # freeze the vision encoder and text encoder
+   
     best = 0
     best_epoch = 0
 
@@ -199,14 +198,19 @@ def main(config):
 
         with torch.cuda.amp.autocast(enabled=config.fp16):
             eval_res = {}
-            for test_name, test_loader in test_name2loaders.items():
-                if test_name not in config.test_types:
-                    logger.info(f"Skip eval {test_name} split. All test_types {config.test_types}")
-                    continue
-                res = evaluation_wrapper(
-                    model_without_ddp, test_loader, tokenizer, device, config, prefix=test_name)
-                eval_res.update(res)
-
+            # for test_name, test_loader in test_name2loaders.items():
+            #     if test_name not in config.test_types:
+            #         logger.info(f"Skip eval {test_name} split. All test_types {config.test_types}")
+            #         continue
+            #     res = evaluation_wrapper(
+            #         model_without_ddp, test_loader, tokenizer, device, config, prefix=test_name)
+            #     eval_res.update(res)
+            print("evaluating multi_ret")
+            if config.multi_ret:
+                result_multi_ret = eval_multi_ret(model_without_ddp, train_loaders, tokenizer, device, config)
+                
+                pass
+        
         if is_main_process():
             if config.wandb.enable:
                 for p, v in eval_res.items():

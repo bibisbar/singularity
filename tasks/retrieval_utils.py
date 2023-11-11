@@ -6,6 +6,9 @@ import numpy as np
 import torch
 import torch.distributed as dist
 
+import torch.nn.functional as F
+import logging
+from dataset import MetaLoader
 from utils.basic_utils import MetricLogger
 from utils.distributed import get_rank, get_world_size
 
@@ -166,6 +169,174 @@ def cross_encoder_evaluation(model, data_loader, tokenizer, device, config):
 
     return i2t_scores_x.cpu().numpy(), t2i_scores_x.cpu().numpy(), \
         i2t_scores.cpu().numpy(), t2i_scores.cpu().numpy()
+
+@torch.no_grad()
+def eval_multi_ret(model, data_loader, tokenizer, device, config):
+    model.eval()
+    train_loaders = data_loader
+    metric_logger = MetricLogger(delimiter="  ")
+    header = "Multi_ret Evaluation:"
+    dtype = torch.half if config.fp16 else torch.float
+    
+    media_types = 'video'
+    train_loader = MetaLoader(name2loader=dict(list(zip(media_types, train_loaders))))
+    log_freq = config.log_freq
+    iterator = metric_logger.log_every(train_loader, log_freq, header)
+    image_feats_all = []
+    text_feats_all = []
+    pos1_text_feats_all = []
+    pos2_text_feats_all = []
+    pos3_text_feats_all = []
+    test = 0
+    for i, (media_type, (image, text, idx, neg_text1, neg_text2, neg_text3,neg_text4,neg_text5,neg_text6,neg_text7, postive_text1, postive_text2, postive_text3, postive_text4, postive_text5, postive_text6, postive_text7)) in enumerate(iterator):
+        
+        if test == 0:
+            print('text', text)
+            print('neg_text1', neg_text1)
+            print('neg_text2', neg_text2)
+            print('neg_text3', neg_text3)
+            print('neg_text4', neg_text4)
+            print('neg_text5', neg_text5)
+            print('neg_text6', neg_text6)
+            print('neg_text7', neg_text7)
+            print('postive_text1', postive_text1)
+            print('postive_text2', postive_text2)
+            print('postive_text3', postive_text3)
+            print('postive_text4', postive_text4)
+            print('postive_text5', postive_text5)
+            print('postive_text6', postive_text6)
+            print('postive_text7', postive_text7)
+            test = 1
+        image = image.to(device, non_blocking=True)
+        idx = idx.to(device, non_blocking=True)
+        text_input = tokenizer(
+            text, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        
+        postive_input1 = tokenizer(
+            postive_text1, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input2 = tokenizer(
+            postive_text2, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        postive_input3 = tokenizer(
+            postive_text3, padding="max_length", truncation=True,
+            max_length=config.max_txt_l, return_tensors="pt"
+        ).to(device)
+        
+        with torch.cuda.amp.autocast(enabled=config.fp16):
+            image_embeds, pooled_image_embeds = model.encode_image(image)
+            text_embeds, pooled_text_embeds = model.encode_text(text_input)
+            pos_text1_embeds, pooled_pos_text1_embeds = model.encode_text(postive_input1)
+            pos_text2_embeds, pooled_pos_text2_embeds = model.encode_text(postive_input2)
+            pos_text3_embeds, pooled_pos_text3_embeds = model.encode_text(postive_input3)
+        image_proj = model.vision_proj
+        text_proj = model.text_proj
+        
+        image_feat = F.normalize(image_proj(pooled_image_embeds), dim=-1)
+        print('shape of image_feat', image_feat.shape)
+        text_feat = F.normalize(text_proj(pooled_text_embeds), dim=-1)
+        print('shape of text_feat', text_feat.shape)
+        pos1_text_feat = F.normalize(text_proj(pooled_pos_text1_embeds), dim=-1)
+        print('shape of pos1_text_feat', pos1_text_feat.shape)
+        pos2_text_feat = F.normalize(text_proj(pooled_pos_text2_embeds), dim=-1)
+        pos3_text_feat = F.normalize(text_proj(pooled_pos_text3_embeds), dim=-1)
+        
+        image_feats_all.append(image_feat.cpu())
+        text_feats_all.append(text_feat.cpu())
+        pos1_text_feats_all.append(pos1_text_feat.cpu())
+        pos2_text_feats_all.append(pos2_text_feat.cpu())
+        pos3_text_feats_all.append(pos3_text_feat.cpu())
+    #convert all list to tensor
+    image_feats_all = torch.cat(image_feats_all, dim=0)
+    text_feats_all = torch.cat(text_feats_all, dim=0)
+    pos1_text_feats_all = torch.cat(pos1_text_feats_all, dim=0)
+    pos2_text_feats_all = torch.cat(pos2_text_feats_all, dim=0)
+    pos3_text_feats_all = torch.cat(pos3_text_feats_all, dim=0)
+    
+    print('shape of image_feats_all', image_feats_all.shape)
+    print('shape of text_feats_all', text_feats_all.shape)
+    print('shape of pos1_text_feats_all', pos1_text_feats_all.shape)
+    print('shape of pos2_text_feats_all', pos2_text_feats_all.shape)
+    print('shape of pos3_text_feats_all', pos3_text_feats_all.shape)
+    #concate all text feats and pos text feats
+    pos_text_feats_all = torch.cat((text_feats_all, pos1_text_feats_all, pos2_text_feats_all, pos3_text_feats_all), dim=0)
+    print('shape of pos_text_feats_all', pos_text_feats_all.shape)
+    #compute the similarity between image and text
+    sim_i2t = torch.einsum("mld,nd->mln", image_feats_all, pos_text_feats_all).mean(1)
+    print('shape of sim_i2t', sim_i2t.shape)
+    #now we have multiple gt text for each image, we need to calculate the recall1, recall5, recall10
+    #first we need to get the index of the max similarity
+    sim_i2t = sim_i2t.cpu().numpy()
+    #print('sim_i2t', sim_i2t)
+    #print('shape of sim_i2t', sim_i2t.shape)
+    len_video = sim_i2t.shape[0]
+    mask = np.zeros(sim_i2t.shape)
+    for i in range(0, sim_i2t.shape[0]):
+        mask[i][i] = 1
+        mask[i][i+len_video] = 1
+        mask[i][i+len_video*2] = 1
+        mask[i][i+len_video*3] = 1
+    #print('mask', mask)
+    #print('shape of mask', mask.shape)
+    
+    
+    ind_gt = mask
+    ind_sort = np.argsort(np.argsort(-sim_i2t)) + 1
+    #print('shape of ind_sort', ind_sort)
+    ind_mask = np.ma.array(ind_gt * ind_sort, mask=ind_gt == 0)
+    #print('shape of ind_mask', ind_mask)
+    
+    ind_gt_t = ind_gt.T
+    ind_sort_t = np.argsort(np.argsort(-sim_i2t.T)) + 1
+    #print('shape of ind_sort_t', ind_sort_t)
+    ind_mask_t = np.ma.array(ind_gt_t * ind_sort_t, mask=ind_gt_t == 0)
+    #print('shape of ind_mask_t', ind_mask_t)
+    # ind_mask_t = ind_mask_t.masked_fill(ind_mask_t == 0, 1000000000)
+
+    rk_v2t = {}
+    rk_t2v = {}
+
+    rk_v2t['mean_mean'] = np.mean(ind_mask.mean(axis=1))
+    rk_v2t['mean_median'] = np.mean(np.ma.median(ind_mask, axis=1))
+    rk_t2v['mean_mean'] = np.mean(ind_mask_t.mean(axis=1))
+    rk_t2v['mean_median'] = np.mean(np.ma.median(ind_mask_t, axis=1))
+
+    rk_v2t['median_mean'] = np.median(ind_mask.mean(axis=1))
+    rk_v2t['median_median'] = np.median(np.ma.median(ind_mask, axis=1))
+    rk_t2v['median_mean'] = np.median(ind_mask_t.mean(axis=1))
+    rk_t2v['median_median'] = np.median(np.ma.median(ind_mask_t, axis=1))
+    # ind_mask = ind_mask.masked_fill(ind_mask == 0, 1000000000)
+    for k in [1, 5, 10, 50, 100]:
+        # print('==================')
+        # print(np.sum(ind_mask <= k, axis=1))
+        # print(batch_ncaption.cpu().numpy())
+        # print('==================')
+        r = np.mean(np.mean(ind_mask <= k, axis=1))
+        r_t = np.mean(np.mean(ind_mask_t <= k, axis=1))
+        rk_v2t['hit_ratio_' + str(k)] = r
+        rk_t2v['hit_ratio_' + str(k)] = r_t
+
+        r_t = np.mean(ind_mask_t.min(axis=1) <= k)
+        r = np.mean(ind_mask.min(axis=1) <= k)
+        rk_v2t['best_' + str(k)] = r
+        rk_t2v['best_' + str(k)] = r_t
+
+        r_t = np.mean(ind_mask_t.max(axis=1) <= k)
+        r = np.mean(ind_mask.max(axis=1) <= k)
+        rk_v2t['worst_' + str(k)] = r
+        rk_t2v['worst_' + str(k)] = r_t
+    print('rk_v2t', rk_v2t)
+    print('rk_t2v', rk_t2v)
+    
+    
+    
+    
+
+
 
 
 @torch.no_grad()

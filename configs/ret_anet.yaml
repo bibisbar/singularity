@@ -90,7 +90,7 @@ eval_x_only: False
 eval_offload: True # offload image gpu tensors to cpu to save memory, when meet OOM error.
 device: cuda
 seed: 42
-log_freq: 100
+log_freq: 1
 dist_url: env://
 distributed: True
 fp16: True
@@ -109,3 +109,5 @@ temp_neg: False
 temp_neg_ratio: 0.02
 num_pos: 7
 num_neg: 7
+multi_ret: False
+

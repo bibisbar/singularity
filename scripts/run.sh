@@ -284,3 +284,15 @@ sbatch scripts/train_vqa_full.sh mil_beta_0.5_7_pos_no_ave_5_neg_correction_stat
 sbatch scripts/train_vqa_full.sh mil_beta_0.5_7_pos_no_ave_1_neg_correction_state anet 2 local 10019 pretrained_path=/home/wiss/zhang/Jinhe/singularity/mil/ret_anet/anet_mil_beta_0.5_7_pos_no_ave_1_neg/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
 sbatch scripts/train_vqa_full.sh mil_beta_0.5_7_pos_no_ave_3_neg_correction_state anet 2 local 10020 pretrained_path=/home/wiss/zhang/Jinhe/singularity/mil/ret_anet/anet_mil_beta_0.5_7_pos_no_ave_3_neg/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
 sbatch scripts/train_vqa_full.sh mil_beta_0.5_7_pos_no_ave_7_neg_correction_state anet 2 local 10021 pretrained_path=/home/wiss/zhang/Jinhe/singularity/mil/ret_anet/anet_mil_beta_0.5_7_pos_no_ave_7_neg/ckpt_best.pth \ video_input.num_frames=4 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2
+
+
+
+
+#ret for multi pos
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/neg/ret_anet/anet_anet_neg_0_from_scratch/ckpt_best.pth test local 1 10022 \ test_types=[temporal_contact_swap] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ multi_ret=True \ train_type=anet_multi_ret_600.json \ batch_size.video=4 \ is_paragraph_retrieval=False
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/mil/ret_anet/anet_mil_beta_0.5_7_pos_no_ave_1_neg/ckpt_best.pth mil_beta_0.5_7_pos_no_ave_1_neg local 1 10023 \ test_types=[temporal_contact_swap] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ multi_ret=True \ train_type=anet_multi_ret_600.json \ batch_size.video=4 \ is_paragraph_retrieval=False
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/mil/ret_anet/anet_mil_anet_neg_1_from_scratch_wo_temp_neg/ckpt_best.pth mil_anet_neg_1_from_scratch_wo_temp_neg local 1 10024 \ test_types=[temporal_contact_swap] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ multi_ret=True \ train_type=anet_multi_ret_600.json \ batch_size.video=4 \ is_paragraph_retrieval=False
+
+sbatch scripts/eval_ret.sh anet /home/wiss/zhang/Jinhe/singularity/mil/ret_anet/anet_mil_beta_0.5_7_pos_no_ave_3_neg/ckpt_best.pth mil_beta_0.5_7_pos_no_ave_3_neg local 1 10025 \ test_types=[temporal_contact_swap] video_input.num_frames_test=12 \ add_temporal_embed=True \ temporal_vision_encoder.enable=True \ temporal_vision_encoder.num_layers=2 \ multi_ret=True \ train_type=anet_multi_ret_600.json \ batch_size.video=4 \ is_paragraph_retrieval=False
