@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:2
-#SBATCH --job-name=sl_ret_neg
-#SBATCH --exclude=worker-3,worker-4
+#SBATCH --job-name=sl_ret_mil_beta
+#SBATCH --exclude=worker-2,worker-3,worker-4
 
 
 # debug info

@@ -349,8 +349,15 @@ class SingularityRetrievalBase(nn.Module):
                 #neg_text1_embeds_inbatch : 256
                 #unsqueeze to 1 * 256
                 #caoncate all neg_text_embeds size 7 * 256
-                neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0), neg_text4_embeds_inbatch.unsqueeze(0), neg_text5_embeds_inbatch.unsqueeze(0), neg_text6_embeds_inbatch.unsqueeze(0), neg_text7_embeds_inbatch.unsqueeze(0)), 0)
-                
+                if self.config.num_neg == 7:
+                    neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0), neg_text4_embeds_inbatch.unsqueeze(0), neg_text5_embeds_inbatch.unsqueeze(0), neg_text6_embeds_inbatch.unsqueeze(0), neg_text7_embeds_inbatch.unsqueeze(0)), 0)
+                elif self.config.num_neg == 5:
+                    neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0), neg_text4_embeds_inbatch.unsqueeze(0), neg_text5_embeds_inbatch.unsqueeze(0)), 0)
+                elif self.config.num_neg == 3:
+                    neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0)), 0)
+                elif self.config.num_neg == 1:
+                    neg_text_embeds_inbatch = neg_text1_embeds_inbatch.unsqueeze(0)
+                    
                 sim_i2t_pos = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_feat).mean(1) / self.temp
                 #print('sim_i2t_pos in get_contrastive_loss', sim_i2t_pos.shape)
                 if self.config.temp_neg is False:
@@ -363,47 +370,107 @@ class SingularityRetrievalBase(nn.Module):
                 #concate pos and neg sim_i2t
                 sim_i2t_extended = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
                 #print('sim_i2t_extended in get_contrastive_loss', sim_i2t_extended.shape)
-                
-                pos_text_embeds_inbatch = torch.cat((pos_text1_embeds_inbatch.unsqueeze(0), pos_text2_embeds_inbatch.unsqueeze(0), pos_text3_embeds_inbatch.unsqueeze(0), pos_text4_embeds_inbatch.unsqueeze(0), pos_text5_embeds_inbatch.unsqueeze(0), pos_text6_embeds_inbatch.unsqueeze(0), pos_text7_embeds_inbatch.unsqueeze(0)), 0)
+                sim_i2t_extended_beta = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
+                if self.config.num_pos == 7:
+                    pos_text_embeds_inbatch = torch.cat((pos_text1_embeds_inbatch.unsqueeze(0), pos_text2_embeds_inbatch.unsqueeze(0), pos_text3_embeds_inbatch.unsqueeze(0), pos_text4_embeds_inbatch.unsqueeze(0), pos_text5_embeds_inbatch.unsqueeze(0), pos_text6_embeds_inbatch.unsqueeze(0), pos_text7_embeds_inbatch.unsqueeze(0)), 0)
+                elif self.config.num_pos == 3:
+                    pos_text_embeds_inbatch = torch.cat((pos_text1_embeds_inbatch.unsqueeze(0), pos_text2_embeds_inbatch.unsqueeze(0), pos_text3_embeds_inbatch.unsqueeze(0)), 0)
+                elif self.config.num_pos == 1:
+                    pos_text_embeds_inbatch = pos_text1_embeds_inbatch.unsqueeze(0)
                 sim_i2t_pos_inbatch = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_embeds_inbatch).mean(1) / self.temp
                 
                 sim_i2t_extended = torch.cat((sim_i2t_extended, sim_i2t_pos_inbatch), 1)
                 if i == 0:
                     extended_sim_matrix  = sim_i2t_extended   
+                    extended_sim_matrix_beta = sim_i2t_extended_beta
                 else:
                     extended_sim_matrix = torch.cat((extended_sim_matrix, sim_i2t_extended), 0)
+                    extended_sim_matrix_beta = torch.cat((extended_sim_matrix_beta, sim_i2t_extended_beta), 0)
                 
             
             softmax_vt = torch.exp(extended_sim_matrix)
             
+            softmax_vt_beta = torch.exp(extended_sim_matrix_beta)
             part_1 = torch.sum(softmax_vt[:, 0:bs], dim=1)
-            part_2 = torch.sum(softmax_vt[:, bs+1:bs+7], dim=1)
-            part_3 = torch.sum(softmax_vt[:, bs+7:], dim=1)
             
+            if self.config.num_neg == 7:
+                
+                part_2 = torch.sum(softmax_vt[:, bs:bs+7], dim=1)
+                
+                part_3 = torch.sum(softmax_vt[:, bs+7:], dim=1)
+            elif self.config.num_neg == 5:
+                
+                part_2 = torch.sum(softmax_vt[:, bs:bs+5], dim=1)
+                
+                part_3 = torch.sum(softmax_vt[:, bs+5:], dim=1)    
+            elif self.config.num_neg == 3:
+                
+                part_2 = torch.sum(softmax_vt[:, bs:bs+3], dim=1)
+                
+                part_3 = torch.sum(softmax_vt[:, bs+3:], dim=1)
+            elif self.config.num_neg == 1:
+                
+                part_2 = torch.sum(softmax_vt[:, bs:bs+1], dim=1)
+                
+                part_3 = torch.sum(softmax_vt[:, bs+1:], dim=1)
+            #HN-NCE loss
+            HN_NCE_vt = torch.exp(extended_sim_matrix_beta*beta)
             
-            sim_i2t_inbatch = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
-            
-            sim_i2t_inbatch = torch.exp(sim_i2t_inbatch)
-            #print('sim_i2t_inbatch in get_contrastive_loss', sim_i2t_inbatch)
+            sim_i2t_inbatch_beta = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
+            sim_i2t_HN_NCE = torch.exp(sim_i2t_inbatch_beta*beta)
+            sim_i2t_inbatch_exp = torch.exp(sim_i2t_inbatch_beta)
             
             #get loss
-            gt = torch.diag(sim_i2t_inbatch)
-            loss_i2t_exp = -torch.log((gt + part_3)/(part_1 + self.config.neg_ratio * part_2 + part_3))
-            print('loss_i2t_exp in get_contrastive_loss', loss_i2t_exp)
+            gt = torch.diag(sim_i2t_inbatch_exp)
+            gt_weight = torch.diag(sim_i2t_HN_NCE)
+            
+            #get weight
+            sum_of_weight = torch.sum(HN_NCE_vt, dim=1) - gt_weight
+            
+            #size of sum_of_weight is (bsz) and size of HN_NCE_vt is (bsz, bsz+7)
+            #devide HN_NCE_vt by sum_of_weight
+            weight_i2t = HN_NCE_vt / sum_of_weight.unsqueeze(1)
+            weight_i2t = (bs-1)*weight_i2t
+            
+            #make the diagonal of weight_i2t to be 0 ,i.e., weight_i2t[i][i] = 0
+            for i in range(len(weight_i2t)):
+                weight_i2t[i][i] = 0
+            ave_gt = (gt+part_3)
+            
+            #get loss_i2t
             loss_i2t = -torch.sum(
-                torch.log((gt + part_3)/(part_1 + self.config.neg_ratio * part_2 + part_3))).mean()
+                torch.log(ave_gt/(alpha*ave_gt + torch.sum(weight_i2t*softmax_vt_beta, dim=1)))).mean()
+            #print('loss_i2t is ', loss_i2t)
+            #calculate mean of loss_i2t
             loss_i2t = loss_i2t / bs
-            print('loss_i2t in get_contrastive_loss', loss_i2t)
             
+            sim_t2i_inbatch = sim_i2t_inbatch_beta.T
+            sim_t2i_inbatch_exp = torch.exp(sim_t2i_inbatch)
+            #print('sim_t2i_inbatch_exp is ', sim_t2i_inbatch_exp)
+            sim_t2i_HN_NCE = torch.exp(sim_t2i_inbatch*beta)
+            #print('sim_t2i_HN_NCE is ', sim_t2i_HN_NCE)
+            
+            gt_t2i = torch.diag(sim_t2i_inbatch_exp)
+            #print('gt_t2i is ', gt_t2i)
+            gt_weight_t2i = torch.diag(sim_t2i_HN_NCE)
+            #print('gt_weight_t2i is ', gt_weight_t2i)
+            sum_of_weight_t2i = torch.sum(sim_t2i_HN_NCE, dim=1) - gt_weight_t2i
+            #print('sum_of_weight_t2i is ', sum_of_weight_t2i)
+            weight_t2i = sim_t2i_HN_NCE / sum_of_weight_t2i.unsqueeze(1)
+            #print('weight_t2i is ', weight_t2i)
+            weight_t2i = (bs-1)*weight_t2i
+            #print('weight_t2i is ', weight_t2i) 
+            
+            #make the diagonal of weight_t2i to be 0 ,i.e., weight_t2i[i][i] = 0
+            for i in range(len(weight_t2i)):
+                weight_t2i[i][i] = 0
+            #print('weight_t2i is ', weight_t2i)
             loss_t2i = -torch.sum(
-                F.log_softmax(sim_t2i, dim=1) * sim_t2i_targets, dim=1).mean()
-            # print('loss_t2i in get_contrastive_loss', loss_t2i)
+                torch.log(gt_t2i/(alpha*gt_t2i + torch.sum(weight_t2i*sim_t2i_inbatch_exp, dim=1)))).mean()
+            loss_t2i = loss_t2i / bs
             
+            #get loss_ita
             loss_ita = (loss_i2t + loss_t2i) / 2
-            
-            
-            
-            
           
         if self.config.evaluate:
             loss_i2t = -torch.sum(

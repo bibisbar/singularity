@@ -107,3 +107,5 @@ save_path: /home/wiss/zhang/nfs/video_prober/singularity/anetqa/
 neg_ratio: 1
 temp_neg: False
 temp_neg_ratio: 0.02
+num_pos: 7
+num_neg: 7
