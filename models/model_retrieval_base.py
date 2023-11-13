@@ -360,17 +360,22 @@ class SingularityRetrievalBase(nn.Module):
                     
                 sim_i2t_pos = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_feat).mean(1) / self.temp
                 #print('sim_i2t_pos in get_contrastive_loss', sim_i2t_pos.shape)
-                if self.config.temp_neg is False:
-                    print('temp_neg is False')
-                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
-                elif self.config.temp_neg is True:
-                    print('temp_neg is True')
-                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp_negative
-                #print('sim_i2t_neg in get_contrastive_loss', sim_i2t_neg.shape)
-                #concate pos and neg sim_i2t
-                sim_i2t_extended = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
-                #print('sim_i2t_extended in get_contrastive_loss', sim_i2t_extended.shape)
-                sim_i2t_extended_beta = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
+                if self.config.num_neg != 0:
+                    if self.config.temp_neg is False:
+                        print('temp_neg is False')
+                        sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
+                    elif self.config.temp_neg is True:
+                        print('temp_neg is True')
+                        sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp_negative
+                    #print('sim_i2t_neg in get_contrastive_loss', sim_i2t_neg.shape)
+                    #concate pos and neg sim_i2t
+                    sim_i2t_extended = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
+                    #print('sim_i2t_extended in get_contrastive_loss', sim_i2t_extended.shape)
+                    sim_i2t_extended_beta = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
+                if self.config.num_neg == 0:
+                    sim_i2t_extended = sim_i2t_pos
+                    sim_i2t_extended_beta = sim_i2t_pos
+                    
                 if self.config.num_pos == 7:
                     pos_text_embeds_inbatch = torch.cat((pos_text1_embeds_inbatch.unsqueeze(0), pos_text2_embeds_inbatch.unsqueeze(0), pos_text3_embeds_inbatch.unsqueeze(0), pos_text4_embeds_inbatch.unsqueeze(0), pos_text5_embeds_inbatch.unsqueeze(0), pos_text6_embeds_inbatch.unsqueeze(0), pos_text7_embeds_inbatch.unsqueeze(0)), 0)
                 elif self.config.num_pos == 3:
@@ -389,8 +394,9 @@ class SingularityRetrievalBase(nn.Module):
                 
             
             softmax_vt = torch.exp(extended_sim_matrix)
-            
+            print('softmax_vt is ', softmax_vt.shape)
             softmax_vt_beta = torch.exp(extended_sim_matrix_beta)
+            print('softmax_vt_beta is ', softmax_vt_beta.shape)
             part_1 = torch.sum(softmax_vt[:, 0:bs], dim=1)
             
             if self.config.num_neg == 7:
@@ -414,6 +420,10 @@ class SingularityRetrievalBase(nn.Module):
                 
                 part_3 = torch.sum(softmax_vt[:, bs+1:], dim=1)
             #HN-NCE loss
+            elif self.config.num_neg == 0:
+                test = softmax_vt[:, bs:]
+                print('test is ', test.shape)
+                part_3 = torch.sum(softmax_vt[:, bs:], dim=1)
             HN_NCE_vt = torch.exp(extended_sim_matrix_beta*beta)
             
             sim_i2t_inbatch_beta = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
