@@ -263,7 +263,7 @@ def eval_multi_ret(model, data_loader, tokenizer, device, config):
     print('shape of pos2_text_feats_all', pos2_text_feats_all.shape)
     print('shape of pos3_text_feats_all', pos3_text_feats_all.shape)
     #concate all text feats and pos text feats
-    pos_text_feats_all = torch.cat((text_feats_all, pos1_text_feats_all, pos2_text_feats_all, pos3_text_feats_all), dim=0)
+    pos_text_feats_all = torch.cat((text_feats_all, pos1_text_feats_all), dim=0)
     print('shape of pos_text_feats_all', pos_text_feats_all.shape)
     #compute the similarity between image and text
     sim_i2t = torch.einsum("mld,nd->mln", image_feats_all, pos_text_feats_all).mean(1)
@@ -275,15 +275,10 @@ def eval_multi_ret(model, data_loader, tokenizer, device, config):
     #print('shape of sim_i2t', sim_i2t.shape)
     len_video = sim_i2t.shape[0]
     mask = np.zeros(sim_i2t.shape)
+    
     for i in range(0, sim_i2t.shape[0]):
         mask[i][i] = 1
-        mask[i][i+len_video] = 1
-        mask[i][i+len_video*2] = 1
-        mask[i][i+len_video*3] = 1
-    #print('mask', mask)
-    #print('shape of mask', mask.shape)
-    
-    
+    print('shape of mask', mask)
     ind_gt = mask
     ind_sort = np.argsort(np.argsort(-sim_i2t)) + 1
     #print('shape of ind_sort', ind_sort)
@@ -329,9 +324,73 @@ def eval_multi_ret(model, data_loader, tokenizer, device, config):
         r = np.mean(ind_mask.max(axis=1) <= k)
         rk_v2t['worst_' + str(k)] = r
         rk_t2v['worst_' + str(k)] = r_t
-    print('rk_v2t', rk_v2t)
-    print('rk_t2v', rk_t2v)
+    pos_rk_v2t = rk_v2t
+    pos_rk_t2v = rk_t2v
     
+    
+        
+        
+    mask = np.zeros(sim_i2t.shape)
+    for i in range(0, sim_i2t.shape[0]):
+        mask[i][i+len_video] = 1
+    print('shape of mask', mask)
+    ind_gt = mask
+    ind_sort = np.argsort(np.argsort(-sim_i2t)) + 1
+    #print('shape of ind_sort', ind_sort)
+    ind_mask = np.ma.array(ind_gt * ind_sort, mask=ind_gt == 0)
+    #print('shape of ind_mask', ind_mask)
+    
+    ind_gt_t = ind_gt.T
+    ind_sort_t = np.argsort(np.argsort(-sim_i2t.T)) + 1
+    #print('shape of ind_sort_t', ind_sort_t)
+    ind_mask_t = np.ma.array(ind_gt_t * ind_sort_t, mask=ind_gt_t == 0)
+    #print('shape of ind_mask_t', ind_mask_t)
+    # ind_mask_t = ind_mask_t.masked_fill(ind_mask_t == 0, 1000000000)
+
+    rk_v2t = {}
+    rk_t2v = {}
+
+    rk_v2t['mean_mean'] = np.mean(ind_mask.mean(axis=1))
+    rk_v2t['mean_median'] = np.mean(np.ma.median(ind_mask, axis=1))
+    rk_t2v['mean_mean'] = np.mean(ind_mask_t.mean(axis=1))
+    rk_t2v['mean_median'] = np.mean(np.ma.median(ind_mask_t, axis=1))
+
+    rk_v2t['median_mean'] = np.median(ind_mask.mean(axis=1))
+    rk_v2t['median_median'] = np.median(np.ma.median(ind_mask, axis=1))
+    rk_t2v['median_mean'] = np.median(ind_mask_t.mean(axis=1))
+    rk_t2v['median_median'] = np.median(np.ma.median(ind_mask_t, axis=1))
+    # ind_mask = ind_mask.masked_fill(ind_mask == 0, 1000000000)
+    for k in [1, 5, 10, 50, 100]:
+        # print('==================')
+        # print(np.sum(ind_mask <= k, axis=1))
+        # print(batch_ncaption.cpu().numpy())
+        # print('==================')
+        r = np.mean(np.mean(ind_mask <= k, axis=1))
+        r_t = np.mean(np.mean(ind_mask_t <= k, axis=1))
+        rk_v2t['hit_ratio_' + str(k)] = r
+        rk_t2v['hit_ratio_' + str(k)] = r_t
+
+        r_t = np.mean(ind_mask_t.min(axis=1) <= k)
+        r = np.mean(ind_mask.min(axis=1) <= k)
+        rk_v2t['best_' + str(k)] = r
+        rk_t2v['best_' + str(k)] = r_t
+
+        r_t = np.mean(ind_mask_t.max(axis=1) <= k)
+        r = np.mean(ind_mask.max(axis=1) <= k)
+        rk_v2t['worst_' + str(k)] = r
+        rk_t2v['worst_' + str(k)] = r_t
+    
+    neg_rk_v2t = rk_v2t
+    neg_rk_t2v = rk_t2v
+    
+    #calculate pos_rk_v2t-neg_rk_v2t and pos_rk_t2v-neg_rk_t2v on each metric
+    pos_rk_v2t_delta = {k: pos_rk_v2t[k] - neg_rk_v2t[k] for k in pos_rk_v2t}
+    pos_rk_t2v_delta = {k: pos_rk_t2v[k] - neg_rk_t2v[k] for k in pos_rk_t2v}
+    
+    
+    
+
+    return pos_rk_v2t, pos_rk_t2v, neg_rk_v2t, neg_rk_t2v, pos_rk_v2t_delta, pos_rk_t2v_delta
     
     
     

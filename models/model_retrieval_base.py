@@ -491,9 +491,10 @@ class SingularityRetrievalBase(nn.Module):
         image_proj = self.vision_proj
         text_proj = self.text_proj
 
-        image_feat = F.normalize(image_proj(pooled_image_embeds), dim=-1)
-        text_feat = F.normalize(text_proj(pooled_text_embeds), dim=-1)
-
+        image_feat_n = F.normalize(image_proj(pooled_image_embeds), dim=-1)
+        text_feat_n = F.normalize(text_proj(pooled_text_embeds), dim=-1)
+        image_feat = image_proj(pooled_image_embeds)
+        text_feat = text_proj(pooled_text_embeds)
         #save image and text features only when evaluating
         if self.config.evaluate:
             manipulation = ''
@@ -539,18 +540,18 @@ class SingularityRetrievalBase(nn.Module):
                 # raise Exception('Unknown manipulation type')
             
                 
-            # print("saving image and text features of type: ", manipulation)
-            # print(text_feat.size())
-            # print(image_feat.size())
-            # text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
-            # image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
-            # torch.save(text_feat, text_feat_save_path)
-            # torch.save(image_feat, image_feat_save_path)
-            # # check if the features are saved
-            # import os
-            # print(os.path.exists(text_feat_save_path))
-            # print(os.path.exists(image_feat_save_path))
-            # print("saved image and text features of type: ", manipulation)   
+            print("saving image and text features of type: ", manipulation)
+            print(text_feat.size())
+            print(image_feat.size())
+            text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
+            image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
+            torch.save(text_feat, text_feat_save_path)
+            torch.save(image_feat, image_feat_save_path)
+            # check if the features are saved
+            import os
+            print(os.path.exists(text_feat_save_path))
+            print(os.path.exists(image_feat_save_path))
+            print("saved image and text features of type: ", manipulation)   
         sim_i2t = torch.einsum("mld,nd->mln", image_feat, text_feat).mean(1) / t  # (N, N)
         
         sim_t2i = sim_i2t.T

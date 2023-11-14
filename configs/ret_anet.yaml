@@ -111,3 +111,5 @@ num_pos: 7
 num_neg: 7
 multi_ret: False
 
+manipulation: False
+

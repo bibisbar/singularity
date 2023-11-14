@@ -198,17 +198,23 @@ def main(config):
 
         with torch.cuda.amp.autocast(enabled=config.fp16):
             eval_res = {}
-            # for test_name, test_loader in test_name2loaders.items():
-            #     if test_name not in config.test_types:
-            #         logger.info(f"Skip eval {test_name} split. All test_types {config.test_types}")
-            #         continue
-            #     res = evaluation_wrapper(
-            #         model_without_ddp, test_loader, tokenizer, device, config, prefix=test_name)
-            #     eval_res.update(res)
-            print("evaluating multi_ret")
+            for test_name, test_loader in test_name2loaders.items():
+                if test_name not in config.test_types:
+                    logger.info(f"Skip eval {test_name} split. All test_types {config.test_types}")
+                    continue
+                res = evaluation_wrapper(
+                    model_without_ddp, test_loader, tokenizer, device, config, prefix=test_name)
+                eval_res.update(res)
+            
             if config.multi_ret:
-                result_multi_ret = eval_multi_ret(model_without_ddp, train_loaders, tokenizer, device, config)
-                
+                print("evaluating multi_ret")
+                pos_rk_v2t, pos_rk_t2v, neg_rk_v2t, neg_rk_t2v, pos_rk_v2t_delta, pos_rk_t2v_delta = eval_multi_ret(model_without_ddp, train_loaders, tokenizer, device, config)
+                logger.info(f"pos_rk_v2t: {pos_rk_v2t}")
+                logger.info(f"pos_rk_t2v: {pos_rk_t2v}")
+                logger.info(f"neg_rk_v2t: {neg_rk_v2t}")
+                logger.info(f"neg_rk_t2v: {neg_rk_t2v}")
+                logger.info(f"pos_rk_v2t_delta: {pos_rk_v2t_delta}")
+                logger.info(f"pos_rk_t2v_delta: {pos_rk_t2v_delta}")
                 pass
         
         if is_main_process():
@@ -220,10 +226,24 @@ def main(config):
                 cur_r_mean = eval_res[config.stop_key]["r_mean"]
             else:  # None
                 cur_r_mean = best + 1  # save the last as the best
+            delta_eval = eval_res
+            
+            print("delta_eval: ", delta_eval)
+            
+            #print the first key and value of delta_eval
+            print("delta_eval: ", list(delta_eval.keys())[0], list(delta_eval.values())[0])
+            pos_metric = list(delta_eval.values())[0]
+            neg_metric = list(delta_eval.values())[2]
+            
+            # pos_metric minus neg_metric along each key
+            delta_metric = {k: pos_metric[k] - neg_metric[k] for k in pos_metric}
+            print("delta_metric: ", delta_metric)
+            logger.info(f"delta_metric: {delta_metric}")
             eval_res = pd.DataFrame(eval_res)
             logger.info(f"Epoch {epoch}")
             logger.info(f"\n{eval_res.transpose()}")
             
+                   
             eval_res.to_json(join(config.output_dir, "eval_res_latest.json"))
             
             #save model every epoch
