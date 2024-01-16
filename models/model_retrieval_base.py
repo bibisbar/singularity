@@ -308,8 +308,6 @@ class SingularityRetrievalBase(nn.Module):
         beta = 0.5
         
         
-        
-        
         bs = len(pooled_image_embeds)
         if self.config.evaluate is False:
             

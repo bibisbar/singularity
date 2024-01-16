@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=sl_qa_eval
-
+#SBATCH --exclude=worker-3
 
 # debug info
 
