@@ -29,7 +29,7 @@ if [ ! -f ${pretrained_path} ]; then
   exit 1
 fi
 
-output_dir=/home/wiss/zhang/Jinhe/singularity/anet_ori_ckpt_ret/${save_dirname}
+output_dir=/home/wiss/zhang/Jinhe/singularity/reb_eval/${save_dirname}
 config_path=./configs/ret_${dataset}.yaml
 
 ### save code copy 

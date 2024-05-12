@@ -305,103 +305,95 @@ class SingularityRetrievalBase(nn.Module):
         
         #intialize alpha and beta for HN-NCE loss
         alpha = 1
-        beta = 0.5
+        beta = 0.25
         
         
         bs = len(pooled_image_embeds)
         if self.config.evaluate is False:
             
-            # for i in range(len(pooled_image_embeds)):    #len:bsz
-            #     neg_text1_embeds_inbatch = F.normalize(text_proj(neg_text1_embeds[i]), dim=-1)
-            #     neg_text2_embeds_inbatch = F.normalize(text_proj(neg_text2_embeds[i]), dim=-1)
-            #     neg_text3_embeds_inbatch = F.normalize(text_proj(neg_text3_embeds[i]), dim=-1)
-            #     neg_text4_embeds_inbatch = F.normalize(text_proj(neg_text4_embeds[i]), dim=-1)
-            #     neg_text5_embeds_inbatch = F.normalize(text_proj(neg_text5_embeds[i]), dim=-1)
-            #     neg_text6_embeds_inbatch = F.normalize(text_proj(neg_text6_embeds[i]), dim=-1)
-            #     neg_text7_embeds_inbatch = F.normalize(text_proj(neg_text7_embeds[i]), dim=-1)
+            for i in range(len(pooled_image_embeds)):    #len:bsz
+                neg_text1_embeds_inbatch = F.normalize(text_proj(neg_text1_embeds[i]), dim=-1)
+                neg_text2_embeds_inbatch = F.normalize(text_proj(neg_text2_embeds[i]), dim=-1)
+                neg_text3_embeds_inbatch = F.normalize(text_proj(neg_text3_embeds[i]), dim=-1)
+                neg_text4_embeds_inbatch = F.normalize(text_proj(neg_text4_embeds[i]), dim=-1)
+                neg_text5_embeds_inbatch = F.normalize(text_proj(neg_text5_embeds[i]), dim=-1)
+                neg_text6_embeds_inbatch = F.normalize(text_proj(neg_text6_embeds[i]), dim=-1)
+                neg_text7_embeds_inbatch = F.normalize(text_proj(neg_text7_embeds[i]), dim=-1)
            
-            #     pos_image_feat = image_feat[i]
-            #     pos_image_feat = pos_image_feat.unsqueeze(0)
+                pos_image_feat = image_feat[i]
+                pos_image_feat = pos_image_feat.unsqueeze(0)
             
-            #     neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0), neg_text4_embeds_inbatch.unsqueeze(0), neg_text5_embeds_inbatch.unsqueeze(0), neg_text6_embeds_inbatch.unsqueeze(0), neg_text7_embeds_inbatch.unsqueeze(0)), 0)
+                neg_text_embeds_inbatch = torch.cat((neg_text1_embeds_inbatch.unsqueeze(0), neg_text2_embeds_inbatch.unsqueeze(0), neg_text3_embeds_inbatch.unsqueeze(0), neg_text4_embeds_inbatch.unsqueeze(0), neg_text5_embeds_inbatch.unsqueeze(0), neg_text6_embeds_inbatch.unsqueeze(0), neg_text7_embeds_inbatch.unsqueeze(0)), 0)
                 
-            #     sim_i2t_pos = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_feat).mean(1) / self.temp
+                sim_i2t_pos = torch.einsum("mld,nd->mln", pos_image_feat, pos_text_feat).mean(1) / self.temp
                 
-            #     if self.config.temp_neg:
-            #         print('temp_neg is True')
-            #         print('temp_neg_ratio is ', self.temp_negative)
-            #         sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp_negative
-            #     elif self.config.temp_neg is False:
-            #         print('temp_neg is False')
-            #         sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
+                if self.config.temp_neg:
+                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp_negative
+                elif self.config.temp_neg is False:
+                    sim_i2t_neg = torch.einsum("mld,nd->mln", pos_image_feat, neg_text_embeds_inbatch).mean(1) / self.temp
                 
-            #     #concate pos and neg sim_i2t
-            #     sim_i2t_extended = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
-            #     if i == 0:
-            #         extended_sim_matrix  = sim_i2t_extended   
-            #     else:
-            #         extended_sim_matrix = torch.cat((extended_sim_matrix, sim_i2t_extended), 0)
+                #concate pos and neg sim_i2t
+                sim_i2t_extended = torch.cat((sim_i2t_pos, sim_i2t_neg), 1)
+                if i == 0:
+                    extended_sim_matrix  = sim_i2t_extended   
+                else:
+                    extended_sim_matrix = torch.cat((extended_sim_matrix, sim_i2t_extended), 0)
                 
             
-            # softmax_vt = torch.exp(extended_sim_matrix)
+            softmax_vt = torch.exp(extended_sim_matrix)
             
-            # #HN-NCE loss
-            # HN_NCE_vt = torch.exp(extended_sim_matrix*beta)
-            
-            # sim_i2t_inbatch = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
-            # sim_i2t_HN_NCE = torch.exp(sim_i2t_inbatch*beta)
-            # sim_i2t_inbatch_exp = torch.exp(sim_i2t_inbatch)
-            
-            # #get loss
-            # gt = torch.diag(sim_i2t_inbatch_exp)
-            # gt_weight = torch.diag(sim_i2t_HN_NCE)
-            
-            # #get weight
-            # sum_of_weight = torch.sum(HN_NCE_vt, dim=1) - gt_weight
-            
-            # #size of sum_of_weight is (bsz) and size of HN_NCE_vt is (bsz, bsz+7)
-            # #devide HN_NCE_vt by sum_of_weight
-            # weight_i2t = HN_NCE_vt / sum_of_weight.unsqueeze(1)
-            # weight_i2t = (bs-1)*weight_i2t
-           
-            
-            # #make the diagonal of weight_i2t to be 0 ,i.e., weight_i2t[i][i] = 0
-            # for i in range(len(weight_i2t)):
-            #     weight_i2t[i][i] = 0
-                
-            
-            # #get loss_i2t
-            # loss_i2t = -torch.sum(
-            #     torch.log(gt/(alpha*gt + torch.sum(weight_i2t*softmax_vt, dim=1)))).mean()
-            # #calculate mean of loss_i2t
-            # loss_i2t = loss_i2t / bs
-            
+            #HN-NCE loss
+            HN_NCE_vt = torch.exp(extended_sim_matrix*beta)
             
             sim_i2t_inbatch = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
-            sim_i2t_inbatch_exp = torch.exp(sim_i2t_inbatch)
             sim_i2t_HN_NCE = torch.exp(sim_i2t_inbatch*beta)
+            sim_i2t_inbatch_exp = torch.exp(sim_i2t_inbatch)
             
-            gt_i2t = torch.diag(sim_i2t_inbatch_exp)
-            gt_weight_i2t = torch.diag(sim_i2t_HN_NCE)
-            sum_of_weight_i2t = torch.sum(sim_i2t_HN_NCE, dim=1) - gt_weight_i2t
-            weight_i2t = sim_i2t_HN_NCE / sum_of_weight_i2t.unsqueeze(1)
+            #get loss
+            gt = torch.diag(sim_i2t_inbatch_exp)
+            gt_weight = torch.diag(sim_i2t_HN_NCE)
+            
+            #get weight
+            sum_of_weight = torch.sum(HN_NCE_vt, dim=1) - gt_weight
+            
+            #size of sum_of_weight is (bsz) and size of HN_NCE_vt is (bsz, bsz+7)
+            #devide HN_NCE_vt by sum_of_weight
+            weight_i2t = HN_NCE_vt / sum_of_weight.unsqueeze(1)
             weight_i2t = (bs-1)*weight_i2t
+           
             
             #make the diagonal of weight_i2t to be 0 ,i.e., weight_i2t[i][i] = 0
             for i in range(len(weight_i2t)):
                 weight_i2t[i][i] = 0
+                
             
+            #get loss_i2t
             loss_i2t = -torch.sum(
-                torch.log(gt_i2t/(alpha*gt_i2t + torch.sum(weight_i2t*sim_i2t_inbatch_exp, dim=1)))).mean()
+                torch.log(gt/(alpha*gt + torch.sum(weight_i2t*softmax_vt, dim=1)))).mean()
+            #calculate mean of loss_i2t
             loss_i2t = loss_i2t / bs
+            
+            
+            # sim_i2t_inbatch = torch.einsum("mld,nd->mln", image_feat, pos_text_feat).mean(1) / self.temp
+            # sim_i2t_inbatch_exp = torch.exp(sim_i2t_inbatch)
+            # sim_i2t_HN_NCE = torch.exp(sim_i2t_inbatch*beta)
+            
+            # gt_i2t = torch.diag(sim_i2t_inbatch_exp)
+            # gt_weight_i2t = torch.diag(sim_i2t_HN_NCE)
+            # sum_of_weight_i2t = torch.sum(sim_i2t_HN_NCE, dim=1) - gt_weight_i2t
+            # weight_i2t = sim_i2t_HN_NCE / sum_of_weight_i2t.unsqueeze(1)
+            # weight_i2t = (bs-1)*weight_i2t
+            
+            # #make the diagonal of weight_i2t to be 0 ,i.e., weight_i2t[i][i] = 0
+            # for i in range(len(weight_i2t)):
+            #     weight_i2t[i][i] = 0
+            
+            # loss_i2t = -torch.sum(
+            #     torch.log(gt_i2t/(alpha*gt_i2t + torch.sum(weight_i2t*sim_i2t_inbatch_exp, dim=1)))).mean()
+            # loss_i2t = loss_i2t / bs
             
             #get loss_t2i
             sim_t2i_inbatch = sim_i2t_inbatch.T
-            # print('sim_i2t_inbatch is ', sim_i2t_inbatch)
-            # print('sim_t2i_inbatch is ', sim_t2i_inbatch)
-            
-            
-            
             
             sim_t2i_inbatch_exp = torch.exp(sim_t2i_inbatch)
             #print('sim_t2i_inbatch_exp is ', sim_t2i_inbatch_exp)
@@ -500,7 +492,19 @@ class SingularityRetrievalBase(nn.Module):
             # else:
                 # #throw an exception
                 # raise Exception('Unknown manipulation type')
-            
+                
+            print("saving image and text features of type: ", manipulation)
+            print(text_feat.size())
+            print(image_feat.size())
+            text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
+            image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
+            torch.save(text_feat, text_feat_save_path)
+            torch.save(image_feat, image_feat_save_path)
+            # check if the features are saved
+            import os
+            print(os.path.exists(text_feat_save_path))
+            print(os.path.exists(image_feat_save_path))
+            print("saved image and text features of type: ", manipulation) 
                 
         #     
         sim_i2t = torch.einsum("mld,nd->mln", image_feat, text_feat).mean(1) / t  # (N, N)
