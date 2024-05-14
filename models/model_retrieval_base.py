@@ -48,7 +48,7 @@ class SingularityRetrievalBase(nn.Module):
         # ================= Dual Encoder ITC loss ================ #
         self.clip_contrastive_temperature()
         self.clip_contrastive_temperature_negative()
-        print('idx in forward', idx)
+        
         image_embeds, pooled_image_embeds = self.encode_image(image)
         text_embeds, pooled_text_embeds = self.encode_text(text)
         neg_text1_embeds, pooled_text1_embeds = self.encode_text(neg_text1)
@@ -251,11 +251,11 @@ class SingularityRetrievalBase(nn.Module):
     @torch.no_grad()
     def clip_contrastive_temperature(self, min_val=0.001, max_val=0.5):
         """Seems only used during pre-training"""
-        self.temp.clamp_(min_val, max_val)
+        #self.temp.clamp_(min_val, max_val)
         
     def clip_contrastive_temperature_negative(self, min_val=0.001, max_val=0.5):
         """Seems only used during pre-training"""
-        self.temp_negative.clamp_(min_val, max_val)
+        #self.temp.clamp_(min_val, max_val)
 
     @torch.no_grad()
     def get_mask(self, sim, idx=None, normalize=False):
@@ -464,7 +464,18 @@ class SingularityRetrievalBase(nn.Module):
                 # #throw an exception
                 # raise Exception('Unknown manipulation type')
             
-                
+            print("saving image and text features of type: ", manipulation)
+            print(text_feat.size())
+            print(image_feat.size())
+            text_feat_save_path = self.config.output_dir + '/text_feat_' + manipulation + '.pt'
+            image_feat_save_path = self.config.output_dir + '/image_feat_' + manipulation + '.pt'
+            torch.save(text_feat, text_feat_save_path)
+            torch.save(image_feat, image_feat_save_path)
+            # check if the features are saved
+            import os
+            print(os.path.exists(text_feat_save_path))
+            print(os.path.exists(image_feat_save_path))
+            print("saved image and text features of type: ", manipulation)                 
         #     
         sim_i2t = torch.einsum("mld,nd->mln", image_feat, text_feat).mean(1) / t  # (N, N)
         

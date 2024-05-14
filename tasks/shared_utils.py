@@ -40,8 +40,8 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
         logger.info(f"Loading checkpoint from {config.pretrained_path}")
         checkpoint = torch.load(config.pretrained_path, map_location="cpu")
         state_dict = checkpoint["model"]
-        #print the value of key ' temp_negative' in state_dict
-        print("temp state_dict: ", state_dict['temp_negative'])
+        # #print the value of key ' temp_negative' in state_dict
+        # print("temp state_dict: ", state_dict['temp_negative'])
         
 
         if config.evaluate:
@@ -109,22 +109,22 @@ def setup_model(config, model_cls, has_decoder=False, pretrain=False, find_unuse
             temp_embed_new=model_without_ddp.temporal_embeddings.data
         )
         
-        for name, param in model.named_parameters():
-            print("name: ", name)
-            print("param.requires_grad: ", param.requires_grad)    
-        print("model_without_ddp.state_dict().keys(): ", model_without_ddp.state_dict().keys())
-        #freeze all layers except the text decoder
-        for name, param in model.named_parameters():
-            if "text_decoder" not in name:
-                param.requires_grad = False
-            else:
-                param.requires_grad = True  
+        # for name, param in model.named_parameters():
+        #     print("name: ", name)
+        #     print("param.requires_grad: ", param.requires_grad)    
+        # print("model_without_ddp.state_dict().keys(): ", model_without_ddp.state_dict().keys())
+        # #freeze all layers except the text decoder
+        # for name, param in model.named_parameters():
+        #     if "text_decoder" not in name:
+        #         param.requires_grad = False
+        #     else:
+        #         param.requires_grad = True  
         
         msg = model_without_ddp.load_state_dict(state_dict, strict=False)
         print('check if model is frozen')
-        for name, param in model.named_parameters():
-            print("name: ", name)
-            print("param.requires_grad: ", param.requires_grad)
+        # for name, param in model.named_parameters():
+        #     print("name: ", name)
+        #     print("param.requires_grad: ", param.requires_grad)
             
         logger.info(msg)
         logger.info(f"Loaded checkpoint from {config.pretrained_path}")

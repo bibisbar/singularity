@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --gres=gpu:2
-#SBATCH --job-name=sl_ret_neg
-
+#SBATCH --gres=gpu:4
+#SBATCH --job-name=sl_anet_reb
+#SBATCH --exclude=worker-3
 
 
 # debug info
@@ -26,7 +26,7 @@ if [[ ${mode} != "slurm" ]] && [[ ${mode} != "local" ]]; then
   exit 1
 fi
 
-output_dir=/home/wiss/zhang/Jinhe/singularity/neg/ret_${dataset}/${dataset}_${exp_name}
+output_dir=/home/wiss/zhang/Jinhe/singularity/eccv_reb/ret_${dataset}/${dataset}_${exp_name}
 config_path=./configs/ret_${dataset}.yaml
 echo "output dir >> ${output_dir}"
 
