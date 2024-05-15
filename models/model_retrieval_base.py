@@ -249,12 +249,12 @@ class SingularityRetrievalBase(nn.Module):
     @torch.no_grad()
     def clip_contrastive_temperature(self, min_val=0.001, max_val=0.5):
         """Seems only used during pre-training"""
-        self.temp.clamp_(min_val, max_val)
+        #self.temp.clamp_(min_val, max_val)
         
     @torch.no_grad()   
     def clip_contrastive_temperature_negative(self, min_val=0.001, max_val=0.5):
         """Seems only used during pre-training"""
-        self.temp_negative.clamp_(min_val, max_val)
+        #self.temp_negative.clamp_(min_val, max_val)
 
     @torch.no_grad()
     def get_mask(self, sim, idx=None, normalize=False):

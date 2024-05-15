@@ -27,7 +27,7 @@ if [[ ${mode} != "slurm" ]] && [[ ${mode} != "local" ]]; then
   exit 1
 fi
 
-output_dir=/home/wiss/zhang/Jinhe/singularity/reb/ret_${dataset}/${dataset}_${exp_name}
+output_dir=/home/wiss/zhang/Jinhe/singularity/eccv_reb_improv/ret_${dataset}/${dataset}_${exp_name}
 config_path=./configs/ret_${dataset}.yaml
 echo "output dir >> ${output_dir}"
 
